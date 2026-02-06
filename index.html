@@ -1,704 +1,477 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSERP | Government Services Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --gov-navy: #0a192f; --gov-gold: #d4af37; --cyber-mint: #64ffda; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--gov-navy); color: #e6f1ff; }
-        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
-        .active-tab { border-left: 4px solid var(--gov-gold); background: rgba(212,175,55,0.1); color: var(--gov-gold); }
-        .pos-card { transition: all 0.2s; cursor: pointer; }
-        .pos-card:hover { transform: translateY(-5px); border-color: var(--gov-gold); background: rgba(255,255,255,0.08); }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #233554; border-radius: 10px; }
-        .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .modal.active { display: flex; align-items: center; justify-content: center; }
-        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--gov-gold); animation: spin 1s ease-in-out infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .toast { position: fixed; bottom: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; z-index: 9999; animation: slideIn 0.3s ease; }
-        .toast.success { background: #10b981; color: white; }
-        .toast.error { background: #ef4444; color: white; }
-        .toast.info { background: #3b82f6; color: white; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @media print { body { background: white; color: black; } .no-print { display: none !important; } .glass { background: white; border: 1px solid #ddd; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>GSERP | Government Services ERP</title>
+<meta name="theme-color" content="#0a192f">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a192f;--navy-lt:#112240;--navy-lr:#1d3557;--gold:#d4af37;--gold-dk:#b8962d;--mint:#64ffda;--txt:#e6f1ff;--muted:#8892b0;--dim:#495670;--danger:#ef4444;--success:#22c55e;--warn:#f59e0b;--info:#3b82f6;--gbg:rgba(255,255,255,0.03);--gbr:rgba(255,255,255,0.08);--rad:16px;--radsm:10px;--font:'DM Sans','Noto Sans Arabic',sans-serif;--mono:'JetBrains Mono',monospace}
+[data-theme=light]{--navy:#f0f4f8;--navy-lt:#fff;--navy-lr:#e2e8f0;--txt:#1e293b;--muted:#64748b;--dim:#94a3b8;--gbg:rgba(255,255,255,0.7);--gbr:rgba(0,0,0,0.08)}
+[data-theme=warm]{--navy:#1a1410;--navy-lt:#2a2018;--navy-lr:#3a3020;--txt:#f5e6d3;--muted:#b8a08a;--dim:#6b5c4f;--gbg:rgba(245,230,211,0.03);--gbr:rgba(245,230,211,0.08)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hidden;height:100vh;transition:background .3s,color .3s}
+[dir=rtl]{direction:rtl;text-align:right}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--navy-lr);border-radius:10px}
+.glass{background:var(--gbg);backdrop-filter:blur(12px);border:1px solid var(--gbr);border-radius:var(--rad)}
+.btn{padding:10px 20px;border-radius:var(--radsm);font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:8px;font-family:var(--font)}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-dk);transform:translateY(-1px)}
+.btn-mint{background:var(--mint);color:var(--navy)}.btn-ghost{background:rgba(255,255,255,.05);color:var(--txt);border:1px solid var(--gbr)}.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--danger)}.btn-sm{padding:6px 14px;font-size:.75rem}
+.input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--gbr);border-radius:var(--radsm);padding:12px 16px;color:var(--txt);font-size:.9rem;font-family:var(--font);transition:border-color .2s;outline:none}
+.input:focus{border-color:var(--gold)}.input::placeholder{color:var(--dim)}select.input{appearance:none;cursor:pointer}
+.label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.tbl{width:100%;text-align:left;border-collapse:collapse}.tbl thead{background:rgba(255,255,255,.03)}
+.tbl th{padding:14px 18px;font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-weight:700}
+.tbl td{padding:14px 18px;font-size:.85rem;border-top:1px solid var(--gbr)}.tbl tr:hover{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.badge-gold{background:rgba(212,175,55,.15);color:var(--gold)}.badge-mint{background:rgba(100,255,218,.1);color:var(--mint)}
+.badge-danger{background:rgba(239,68,68,.1);color:var(--danger)}.badge-success{background:rgba(34,197,94,.1);color:var(--success)}.badge-info{background:rgba(59,130,246,.1);color:var(--info)}
+.stat-card{background:var(--gbg);border:1px solid var(--gbr);border-radius:var(--rad);padding:20px 24px;transition:transform .2s}.stat-card:hover{transform:translateY(-2px)}
+.stat-card .sl{font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-weight:700}
+.stat-card .sv{font-size:1.8rem;font-weight:700;margin-top:8px;font-family:var(--mono)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal-box{background:var(--navy-lt);border:1px solid var(--gbr);border-radius:var(--rad);padding:32px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;margin:16px}
+.modal-box h3{font-size:1.3rem;font-weight:700;margin-bottom:20px}
+.toast-c{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{padding:14px 24px;border-radius:var(--radsm);font-size:.85rem;font-weight:500;animation:si .3s ease;min-width:280px}
+.toast-success{background:#065f46;color:#a7f3d0;border-left:4px solid var(--success)}
+.toast-error{background:#7f1d1d;color:#fca5a5;border-left:4px solid var(--danger)}
+.toast-info{background:#1e3a5f;color:#93c5fd;border-left:4px solid var(--info)}
+.toast-warning{background:#78350f;color:#fde68a;border-left:4px solid var(--warn)}
+@keyframes si{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+#loading-overlay{display:none;position:fixed;inset:0;background:rgba(10,25,47,.9);z-index:3000;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#loading-overlay.active{display:flex}
+.spinner{width:40px;height:40px;border:3px solid var(--gbr);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.pos-item{background:var(--gbg);border:1px solid var(--gbr);border-radius:var(--rad);padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+.pos-item:hover{transform:translateY(-4px);border-color:var(--gold);background:rgba(255,255,255,.06)}
+.cart-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gbr)}.cart-row:last-child{border-bottom:none}
+.qty-ctrl{display:inline-flex;align-items:center;border:1px solid var(--gbr);border-radius:8px;overflow:hidden}
+.qty-ctrl button{width:28px;height:28px;border:none;background:rgba(255,255,255,.05);color:var(--txt);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.qty-ctrl button:hover{background:rgba(255,255,255,.1)}.qty-ctrl span{width:32px;text-align:center;font-size:.8rem;font-weight:600;font-family:var(--mono)}
+.sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.sync-dot.online{background:var(--success);animation:pu 2s infinite}.sync-dot.offline{background:var(--danger)}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.5}}
+.sidebar{width:240px;background:var(--gbg);border-right:1px solid var(--gbr);display:flex;flex-direction:column;padding:20px 12px;flex-shrink:0}
+.sidebar-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:none;border-radius:var(--radsm);background:transparent;color:var(--muted);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--font);text-align:left;border-left:4px solid transparent}
+.sidebar-btn:hover{background:rgba(255,255,255,.04);color:var(--txt)}
+.sidebar-btn.active-tab{border-left-color:var(--gold);background:rgba(212,175,55,.08);color:var(--gold);font-weight:600}
+.tab-page{display:none;height:100%;overflow-y:auto;padding:28px}.tab-page.active{display:block}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.page-title{font-size:1.5rem;font-weight:700}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media print{body{background:#fff!important;color:#000!important;overflow:visible!important}.no-print{display:none!important}.print-only{display:block!important}}.print-only{display:none}
+.invoice-print{background:#fff;color:#1a1a1a;padding:40px;font-family:'DM Sans',sans-serif}
+.invoice-print table{width:100%;border-collapse:collapse}.invoice-print th,.invoice-print td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:.85rem}
+.invoice-print th{background:#f3f4f6;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+@media(max-width:768px){.sidebar{display:none}.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+.fade-in{animation:fi .3s ease}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
 </head>
-<body class="min-h-screen">
-    <!-- LOADING OVERLAY -->
-    <div id="loading-overlay" class="fixed inset-0 z-[300] flex items-center justify-center bg-[#020c1b] hidden">
-        <div class="text-center"><div class="loading w-16 h-16 border-4 mx-auto mb-4"></div><p class="text-gray-400">Loading...</p></div>
-    </div>
+<body>
+<div class="toast-c" id="toasts"></div>
+<div id="loading-overlay"><div class="spinner"></div><p id="loading-text" style="color:var(--muted);font-size:.85rem">Loading...</p></div>
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#020c1b]">
-        <div class="glass w-full max-w-md p-10 rounded-3xl text-center shadow-2xl">
-            <div class="mb-8">
-                <div class="w-20 h-20 bg-gradient-to-tr from-[#d4af37] to-[#f1d592] rounded-2xl mx-auto flex items-center justify-center shadow-lg">
-                    <span class="text-3xl font-bold text-[#0a192f]">GS</span>
-                </div>
-                <h1 class="mt-6 text-2xl font-bold tracking-widest text-white">GSERP PORTAL</h1>
-                <p class="text-gray-400 text-sm mt-2">Government Enterprise Resource Planning</p>
-            </div>
-            <div class="space-y-5 text-left">
-                <div>
-                    <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Username</label>
-                    <input id="login-user" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 mt-1 focus:border-[#d4af37] outline-none" placeholder="Username" value="superadmin">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Password</label>
-                    <input id="login-pass" type="password" class="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 mt-1 focus:border-[#d4af37] outline-none" placeholder="••••••••" value="Admin@123456">
-                </div>
-                <button onclick="attemptLogin()" id="login-btn" class="w-full bg-[#d4af37] hover:bg-[#b8962d] text-[#0a192f] font-bold py-4 rounded-xl transition-all shadow-lg mt-4 uppercase tracking-widest">
-                    Authorize Entry
-                </button>
-            </div>
-            <p id="error-msg" class="text-red-400 text-xs mt-6 hidden">Login failed. Check credentials.</p>
-            <div class="mt-6 text-xs text-gray-500">
-                <p>Demo: superadmin / Admin@123456</p>
-                <p>Cashier: cashier1 / User@12345</p>
-            </div>
-            <div id="api-status" class="mt-4 text-xs"><span class="text-gray-500">API: </span><span id="api-indicator" class="text-yellow-400">Checking...</span></div>
-        </div>
-    </div>
+<!-- LOGIN -->
+<div id="login-screen" style="display:flex;position:fixed;inset:0;z-index:500;align-items:center;justify-content:center;background:linear-gradient(135deg,#020c1b,#0a192f,#112240)">
+<div class="glass" style="width:100%;max-width:420px;padding:48px 40px;text-align:center;margin:16px">
+<div style="width:64px;height:64px;background:linear-gradient(135deg,var(--gold),#f1d592);border-radius:16px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center"><span style="font-size:1.5rem;font-weight:800;color:#0a192f">GS</span></div>
+<h1 style="font-size:1.4rem;font-weight:700;letter-spacing:.1em;margin-bottom:4px">GSERP PORTAL</h1>
+<p style="color:var(--dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;margin-bottom:32px">Government Services ERP System</p>
+<div style="text-align:left">
+<label class="label">Username</label><input id="login-user" type="text" class="input" placeholder="Enter your username" autocomplete="username" style="margin-bottom:16px">
+<label class="label">Password</label><input id="login-pass" type="password" class="input" placeholder="Enter your password" autocomplete="current-password" style="margin-bottom:8px">
+<div style="text-align:right;margin-bottom:24px"><a href="#" onclick="toast('Contact your administrator','info');return false" style="color:var(--gold);font-size:.75rem;text-decoration:none">Forgot password?</a></div>
+<button onclick="doLogin()" class="btn btn-gold" style="width:100%;padding:14px;font-size:.9rem;letter-spacing:.1em">SIGN IN</button>
+</div>
+<p id="login-error" style="color:var(--danger);font-size:.75rem;margin-top:16px;display:none"></p>
+<p style="color:var(--dim);font-size:.65rem;margin-top:28px">GSERP v2.0 — Demo Application</p>
+<p style="color:var(--dim);font-size:.6rem;margin-top:4px">© 2026 Oglah Tech</p>
+</div></div>
 
-    <!-- CUSTOMER MODAL -->
-    <div id="customer-modal" class="modal">
-        <div class="glass w-full max-w-lg p-8 rounded-3xl m-4">
-            <h3 class="text-2xl font-bold mb-6">Customer Information</h3>
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="text-xs text-gray-400 uppercase">Select Existing Customer</label>
-                    <select id="customer-select" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none">
-                        <option value="">-- Select or Add New --</option>
-                    </select>
-                </div>
-                <div class="text-center text-xs text-gray-500">— OR ADD NEW —</div>
-                <div>
-                    <label class="text-xs text-gray-400 uppercase">Customer Name *</label>
-                    <input id="customer-name" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none" placeholder="Enter customer name">
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400 uppercase">Phone Number</label>
-                    <input id="customer-phone" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none" placeholder="+971 XX XXX XXXX">
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400 uppercase">Email</label>
-                    <input id="customer-email" type="email" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none" placeholder="customer@example.com">
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400 uppercase">Payment Method</label>
-                    <select id="payment-method" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none">
-                        <option value="cash">Cash</option>
-                        <option value="card">Credit/Debit Card</option>
-                        <option value="bank">Bank Transfer</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="closeModal('customer-modal')" class="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold transition">Cancel</button>
-                <button onclick="createInvoice()" class="flex-1 bg-[#d4af37] hover:bg-[#b8962d] text-[#0a192f] py-3 rounded-xl font-bold transition">Generate Invoice</button>
-            </div>
-        </div>
-    </div>
+<!-- MAIN APP -->
+<div id="app" style="display:none;height:100vh;flex-direction:column">
+<!-- HEADER -->
+<header class="no-print" style="height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:var(--gbg);border-bottom:1px solid var(--gbr);flex-shrink:0">
+<div style="display:flex;align-items:center;gap:20px">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a192f;font-size:.9rem">GS</div><span style="font-weight:700;font-size:1.1rem">GSERP <span style="color:var(--gold);font-weight:300">PRO</span></span></div>
+<div style="height:28px;width:1px;background:var(--gbr)"></div>
+<div><p id="hdr-clock" style="font-size:1rem;font-weight:500;font-family:var(--mono)"></p><p id="hdr-date" style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em"></p></div>
+</div>
+<div style="display:flex;align-items:center;gap:16px">
+<select id="theme-sel" onchange="setTheme(this.value)" class="input" style="width:auto;padding:6px 12px;font-size:.7rem"><option value="dark">🌙 Dark</option><option value="light">☀️ Light</option><option value="warm">🕯️ Warm</option></select>
+<button onclick="toggleLang()" class="btn btn-ghost btn-sm" id="lang-btn">🌐 EN</button>
+<div style="display:flex;align-items:center;gap:6px"><span id="sync-ind" class="sync-dot online"></span><span id="sync-txt" style="font-size:.7rem;color:var(--muted)">Online</span></div>
+<div style="text-align:right"><p id="hdr-user" style="font-weight:600;font-size:.85rem"></p><p id="hdr-role" style="font-size:.6rem;color:var(--gold);text-transform:uppercase;font-weight:700;letter-spacing:.1em"></p></div>
+<button onclick="doLogout()" class="btn btn-ghost btn-sm" style="color:var(--danger)">Logout</button>
+</div></header>
 
-    <!-- INVOICE MODAL -->
-    <div id="invoice-modal" class="modal">
-        <div class="bg-white text-black w-full max-w-3xl p-8 rounded-3xl m-4 max-h-[90vh] overflow-y-auto">
-            <div id="invoice-content"></div>
-            <div class="flex gap-3 mt-6 no-print">
-                <button onclick="closeModal('invoice-modal')" class="flex-1 bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold transition text-black">Close</button>
-                <button onclick="window.print()" class="flex-1 bg-[#d4af37] hover:bg-[#b8962d] text-[#0a192f] py-3 rounded-xl font-bold transition">Print</button>
-            </div>
-        </div>
-    </div>
+<div style="display:flex;flex:1;overflow:hidden">
+<!-- SIDEBAR -->
+<nav class="sidebar no-print" id="sidebar"></nav>
+<!-- CONTENT -->
+<main style="flex:1;overflow:hidden">
 
-    <!-- MAIN APP -->
-    <div id="app-container" class="hidden h-screen flex flex-col">
-        <!-- HEADER -->
-        <header class="glass h-20 px-8 flex items-center justify-between border-b border-white/5 shrink-0 no-print">
-            <div class="flex items-center gap-8">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-[#d4af37] rounded-lg flex items-center justify-center font-bold text-[#0a192f]">GS</div>
-                    <span class="font-bold text-xl tracking-tighter">GSERP <span class="text-[#d4af37] font-light">PRO</span></span>
-                </div>
-                <div class="h-8 w-[1px] bg-white/10"></div>
-                <div>
-                    <p id="live-clock" class="text-lg font-medium tabular-nums">00:00:00</p>
-                    <p id="live-date" class="text-[10px] text-gray-400 uppercase tracking-widest">Loading...</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><span class="text-xs text-gray-400">Online</span></div>
-                <div class="text-right">
-                    <p id="current-username" class="font-semibold text-white">--</p>
-                    <p id="user-role" class="text-[10px] text-[#64ffda] uppercase font-bold">--</p>
-                </div>
-                <button onclick="logout()" class="p-3 hover:bg-red-500/10 rounded-xl transition text-red-400">Logout</button>
-            </div>
-        </header>
+<!-- DASHBOARD -->
+<div id="pg-dashboard" class="tab-page active">
+<div class="page-header"><h2 class="page-title">Dashboard</h2><button onclick="loadDash()" class="btn btn-ghost btn-sm">🔄 Refresh</button></div>
+<div class="grid-4" id="d-stats" style="margin-bottom:24px"></div>
+<div class="grid-2" style="margin-bottom:24px">
+<div class="glass" style="padding:24px"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">Quick Actions</h3><div style="display:flex;flex-wrap:wrap;gap:8px" id="d-actions"></div></div>
+<div class="glass" style="padding:24px"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">Recent Invoices</h3><div id="d-recent" style="max-height:300px;overflow-y:auto"></div></div>
+</div></div>
 
-        <div class="flex flex-1 overflow-hidden">
-            <!-- SIDEBAR -->
-            <nav class="w-64 glass border-r border-white/5 flex flex-col p-4 shrink-0 no-print">
-                <div class="space-y-1 flex-1">
-                    <button onclick="showTab('dashboard')" id="btn-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 active-tab text-sm">📊 Dashboard</button>
-                    <button onclick="showTab('pos')" id="btn-pos" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">💳 POS Terminal</button>
-                    <button onclick="showTab('invoices')" id="btn-invoices" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">📄 Invoices</button>
-                    <button onclick="showTab('customers')" id="btn-customers" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">👥 Customers</button>
-                    <button onclick="showTab('services')" id="btn-services" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">🏛️ Services</button>
-                    <button onclick="showTab('users')" id="btn-users" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">👤 Users</button>
-                    <button onclick="showTab('branches')" id="btn-branches" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">🏢 Branches</button>
-                </div>
-                <div class="glass p-3 rounded-xl bg-green-500/5 text-xs">
-                    <p class="text-green-400 font-bold mb-1">System Status</p>
-                    <p class="text-gray-400">API Connected ✅</p>
-                </div>
-            </nav>
+<!-- POS -->
+<div id="pg-pos" class="tab-page">
+<div class="page-header"><h2 class="page-title">POS Terminal</h2></div>
+<div style="display:grid;grid-template-columns:1fr 360px;gap:24px;height:calc(100% - 70px)">
+<div style="overflow-y:auto">
+<!-- Customer -->
+<div class="glass" style="padding:20px;margin-bottom:16px;border-left:4px solid var(--gold)">
+<h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">👤 Select Customer</h3>
+<div style="display:flex;gap:8px;margin-bottom:12px"><input id="pos-cs" type="text" class="input" placeholder="Search by name, phone..." oninput="searchPC(this.value)" style="flex:1"><button onclick="showM('cm')" class="btn btn-ghost btn-sm">+ New</button></div>
+<div id="pos-cr" style="max-height:120px;overflow-y:auto"></div>
+<div id="pos-csel" style="display:none;padding:10px;background:rgba(212,175,55,.08);border-radius:var(--radsm);margin-top:8px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div><p style="font-size:.7rem;color:var(--muted)">Selected:</p><p id="pos-cn" style="font-weight:600;color:var(--gold)"></p><p id="pos-cd" style="font-size:.75rem;color:var(--muted)"></p></div><button onclick="clearPC()" class="btn btn-ghost btn-sm" style="color:var(--danger)">✕</button></div>
+</div></div>
+<!-- Services -->
+<div class="glass" style="padding:20px;border-left:4px solid var(--mint)">
+<h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">🛒 Select Services</h3>
+<div style="display:flex;gap:8px;margin-bottom:16px">
+<select id="pos-cf" onchange="renderPOS()" class="input" style="width:auto"><option value="all">All Centers</option><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option></select>
+<input id="pos-sf" type="text" class="input" placeholder="Search services..." oninput="renderPOS()">
+</div>
+<div id="pos-grid" style="max-height:calc(100vh - 440px);overflow-y:auto"></div>
+</div></div>
+<!-- Cart -->
+<div class="glass" style="padding:20px;display:flex;flex-direction:column;height:100%;position:sticky;top:0">
+<h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">Billing Queue</h3>
+<div id="pos-cart" style="flex:1;overflow-y:auto;min-height:100px;border-bottom:1px solid var(--gbr);padding-bottom:8px;margin-bottom:12px"></div>
+<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center"><label class="label" style="margin:0;white-space:nowrap">Discount %</label><input id="pos-disc" type="number" class="input" value="0" min="0" max="100" oninput="updateTotals()" style="width:80px;padding:8px"></div>
+<div style="margin-bottom:16px">
+<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:4px"><span>Subtotal</span><span id="c-sub">0.00 AED</span></div>
+<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:4px"><span>Discount</span><span id="c-disc">0.00 AED</span></div>
+<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:8px"><span>VAT (5%)</span><span id="c-vat">0.00 AED</span></div>
+<div style="display:flex;justify-content:space-between;font-size:1.2rem;font-weight:700;padding-top:8px;border-top:1px solid var(--gbr)"><span>Total</span><span id="c-total" style="color:var(--mint);font-family:var(--mono)">0.00 AED</span></div>
+</div>
+<div style="margin-bottom:12px"><label class="label">Payment Method</label><select id="pos-pay" class="input"><option value="cash">💵 Cash</option><option value="card">💳 Card</option><option value="bank">🏦 Bank Transfer</option><option value="cheque">📝 Cheque</option></select></div>
+<button onclick="clearCart()" class="btn btn-danger" style="width:100%;margin-bottom:8px">Clear Cart</button>
+<button onclick="processPayment()" class="btn btn-gold" style="width:100%;padding:14px;font-size:.95rem;letter-spacing:.1em">PROCESS PAYMENT</button>
+</div></div></div>
 
-            <!-- MAIN CONTENT -->
-            <main class="flex-1 overflow-y-auto p-6">
-                <!-- DASHBOARD -->
-                <div id="tab-dashboard" class="tab-content">
-                    <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div class="glass p-5 rounded-2xl">
-                            <p class="text-xs text-gray-400 uppercase mb-1">Today's Revenue</p>
-                            <p id="stat-revenue" class="text-2xl font-bold text-[#d4af37]">0 AED</p>
-                        </div>
-                        <div class="glass p-5 rounded-2xl">
-                            <p class="text-xs text-gray-400 uppercase mb-1">Invoices Today</p>
-                            <p id="stat-invoices" class="text-2xl font-bold text-[#64ffda]">0</p>
-                        </div>
-                        <div class="glass p-5 rounded-2xl">
-                            <p class="text-xs text-gray-400 uppercase mb-1">Total Customers</p>
-                            <p id="stat-customers" class="text-2xl font-bold text-white">0</p>
-                        </div>
-                        <div class="glass p-5 rounded-2xl">
-                            <p class="text-xs text-gray-400 uppercase mb-1">Active Services</p>
-                            <p id="stat-services" class="text-2xl font-bold text-white">0</p>
-                        </div>
-                    </div>
-                    <div class="glass p-5 rounded-2xl">
-                        <h3 class="font-bold mb-4">Recent Invoices</h3>
-                        <div id="recent-invoices" class="space-y-2"><p class="text-gray-500 text-sm">Loading...</p></div>
-                    </div>
-                </div>
+<!-- INVOICES -->
+<div id="pg-invoices" class="tab-page">
+<div class="page-header"><h2 class="page-title">Invoices</h2>
+<div style="display:flex;gap:8px;align-items:center"><input id="inv-from" type="date" class="input" style="width:auto;padding:6px 10px;font-size:.8rem"><input id="inv-to" type="date" class="input" style="width:auto;padding:6px 10px;font-size:.8rem"><button onclick="loadInv()" class="btn btn-gold btn-sm">Filter</button><button onclick="loadInv()" class="btn btn-ghost btn-sm">🔄</button></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Invoice #</th><th>Customer</th><th>Date</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody id="inv-tb"></tbody></table></div></div>
 
-                <!-- POS -->
-                <div id="tab-pos" class="tab-content hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2">
-                            <h2 class="text-2xl font-bold mb-4">POS Terminal</h2>
-                            <div class="mb-4 flex gap-3">
-                                <select id="center-filter" onchange="filterServices()" class="bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm">
-                                    <option value="all">All Centers</option>
-                                    <option value="Abu Dhabi">Abu Dhabi</option>
-                                    <option value="Dubai">Dubai</option>
-                                    <option value="Sharjah">Sharjah</option>
-                                    <option value="Ajman">Ajman</option>
-                                </select>
-                                <input id="search-service" type="text" placeholder="Search services..." oninput="filterServices()" class="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm">
-                            </div>
-                            <div id="pos-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"><p class="text-gray-500 col-span-3 text-center py-8">Loading services...</p></div>
-                        </div>
-                        <div class="glass rounded-2xl p-5 h-fit sticky top-0">
-                            <h3 class="font-bold mb-4">Cart</h3>
-                            <div id="cart-items" class="space-y-2 mb-4 max-h-[300px] overflow-y-auto border-b border-white/10 pb-4">
-                                <p class="text-gray-500 text-xs text-center py-4">Empty cart</p>
-                            </div>
-                            <div class="space-y-2 text-sm mb-4">
-                                <div class="flex justify-between text-gray-400"><span>Subtotal</span><span id="subtotal">0.00 AED</span></div>
-                                <div class="flex justify-between text-gray-400"><span>VAT (5%)</span><span id="vat">0.00 AED</span></div>
-                                <div class="flex justify-between text-lg font-bold border-t border-white/10 pt-2"><span>Total</span><span id="total" class="text-[#64ffda]">0.00 AED</span></div>
-                            </div>
-                            <button onclick="clearCart()" class="w-full bg-red-500/10 text-red-400 py-2 rounded-xl mb-2 text-sm font-bold hover:bg-red-500/20">Clear</button>
-                            <button onclick="processPayment()" class="w-full bg-[#d4af37] text-[#0a192f] py-3 rounded-xl font-bold hover:bg-[#b8962d]">Process Payment</button>
-                        </div>
-                    </div>
-                </div>
+<!-- CUSTOMERS -->
+<div id="pg-customers" class="tab-page">
+<div class="page-header"><h2 class="page-title">Customers</h2>
+<div style="display:flex;gap:8px"><input id="cust-s" type="text" class="input" placeholder="Search..." oninput="loadCust()" style="width:220px;padding:8px 14px"><button onclick="showM('cm')" class="btn btn-gold btn-sm">+ Add Customer</button></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Code</th><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead><tbody id="cust-tb"></tbody></table></div></div>
 
-                <!-- INVOICES -->
-                <div id="tab-invoices" class="tab-content hidden">
-                    <h2 class="text-2xl font-bold mb-4">Invoices</h2>
-                    <div class="glass rounded-2xl overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
-                                <tr><th class="p-4 text-left">Invoice #</th><th class="p-4 text-left">Customer</th><th class="p-4 text-left">Date</th><th class="p-4 text-left">Amount</th><th class="p-4 text-left">Status</th></tr>
-                            </thead>
-                            <tbody id="invoices-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
+<!-- SERVICES -->
+<div id="pg-services" class="tab-page">
+<div class="page-header"><h2 class="page-title">Services</h2>
+<div style="display:flex;gap:8px"><button onclick="showM('sm')" class="btn btn-gold btn-sm">+ Add Service</button><button onclick="loadSvc()" class="btn btn-ghost btn-sm">🔄</button></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Code</th><th>Service</th><th>Category</th><th>Center</th><th>Price</th><th>VAT</th><th>Status</th><th>Actions</th></tr></thead><tbody id="svc-tb"></tbody></table></div></div>
 
-                <!-- CUSTOMERS -->
-                <div id="tab-customers" class="tab-content hidden">
-                    <h2 class="text-2xl font-bold mb-4">Customers</h2>
-                    <div class="glass rounded-2xl overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
-                                <tr><th class="p-4 text-left">Code</th><th class="p-4 text-left">Name</th><th class="p-4 text-left">Type</th><th class="p-4 text-left">Phone</th><th class="p-4 text-left">Status</th></tr>
-                            </thead>
-                            <tbody id="customers-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
+<!-- USERS -->
+<div id="pg-users" class="tab-page">
+<div class="page-header"><h2 class="page-title">Users</h2>
+<div style="display:flex;gap:8px"><button onclick="showM('um')" class="btn btn-gold btn-sm">+ Add User</button><button onclick="loadUsr()" class="btn btn-ghost btn-sm">🔄</button></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead><tbody id="usr-tb"></tbody></table></div></div>
 
-                <!-- SERVICES -->
-                <div id="tab-services" class="tab-content hidden">
-                    <h2 class="text-2xl font-bold mb-4">Services Catalog</h2>
-                    <div class="glass rounded-2xl overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
-                                <tr><th class="p-4 text-left">Code</th><th class="p-4 text-left">Name</th><th class="p-4 text-left">Category</th><th class="p-4 text-left">Center</th><th class="p-4 text-left">Price</th></tr>
-                            </thead>
-                            <tbody id="services-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
+<!-- BRANCHES -->
+<div id="pg-branches" class="tab-page">
+<div class="page-header"><h2 class="page-title">Branches</h2>
+<div style="display:flex;gap:8px"><button onclick="showM('bm')" class="btn btn-gold btn-sm">+ Add Branch</button><button onclick="loadBr()" class="btn btn-ghost btn-sm">🔄</button></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Code</th><th>Name</th><th>City</th><th>Phone</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead><tbody id="br-tb"></tbody></table></div></div>
 
-                <!-- USERS -->
-                <div id="tab-users" class="tab-content hidden">
-                    <h2 class="text-2xl font-bold mb-4">Users</h2>
-                    <div class="glass rounded-2xl overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
-                                <tr><th class="p-4 text-left">Username</th><th class="p-4 text-left">Full Name</th><th class="p-4 text-left">Role</th><th class="p-4 text-left">Status</th></tr>
-                            </thead>
-                            <tbody id="users-table" class="divide-y divide-white/5"><tr><td colspan="4" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
+<!-- HR -->
+<div id="pg-hr" class="tab-page">
+<div class="page-header"><h2 class="page-title">HR & Attendance</h2>
+<div style="display:flex;gap:8px"><button onclick="doCheckIn()" class="btn btn-mint btn-sm">☀️ Check In</button><button onclick="doCheckOut()" class="btn btn-ghost btn-sm">🌙 Check Out</button></div>
+</div>
+<div class="grid-4" style="margin-bottom:24px">
+<div class="stat-card"><p class="sl">Present</p><p class="sv" id="hr-p" style="color:var(--success)">0</p></div>
+<div class="stat-card"><p class="sl">Absent</p><p class="sv" id="hr-a" style="color:var(--danger)">0</p></div>
+<div class="stat-card"><p class="sl">Late</p><p class="sv" id="hr-l" style="color:var(--warn)">0</p></div>
+<div class="stat-card"><p class="sl">Leave Pending</p><p class="sv" id="hr-lv" style="color:var(--info)">0</p></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>User</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead><tbody id="hr-tb"></tbody></table></div></div>
 
-                <!-- BRANCHES -->
-                <div id="tab-branches" class="tab-content hidden">
-                    <h2 class="text-2xl font-bold mb-4">Branches</h2>
-                    <div class="glass rounded-2xl overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
-                                <tr><th class="p-4 text-left">Code</th><th class="p-4 text-left">Name</th><th class="p-4 text-left">City</th><th class="p-4 text-left">Phone</th><th class="p-4 text-left">Status</th></tr>
-                            </thead>
-                            <tbody id="branches-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
+<!-- REPORTS -->
+<div id="pg-reports" class="tab-page">
+<div class="page-header"><h2 class="page-title">Reports</h2></div>
+<div class="grid-3" style="margin-bottom:24px">
+<button onclick="genRpt('yesterday')" class="btn btn-ghost" style="padding:20px;justify-content:center">📊 Yesterday</button>
+<button onclick="genRpt('week')" class="btn btn-ghost" style="padding:20px;justify-content:center">📈 Last Week</button>
+<button onclick="genRpt('month')" class="btn btn-ghost" style="padding:20px;justify-content:center">📉 Last Month</button>
+</div>
+<div class="grid-2" style="margin-bottom:16px"><div><label class="label">From</label><input id="rpt-from" type="date" class="input"></div><div><label class="label">To</label><input id="rpt-to" type="date" class="input"></div></div>
+<div style="display:flex;gap:8px;margin-bottom:24px"><button onclick="genRpt('custom')" class="btn btn-gold">Generate Report</button><button onclick="exportRpt('csv')" class="btn btn-ghost">📊 Export CSV</button></div>
+<div id="rpt-out" class="glass" style="padding:24px;min-height:200px"><p style="color:var(--muted);text-align:center;padding:40px">Select a report period above</p></div></div>
 
+<!-- SETTINGS -->
+<div id="pg-settings" class="tab-page">
+<div class="page-header"><h2 class="page-title">Settings</h2></div>
+<div class="grid-2" style="margin-bottom:24px">
+<div class="glass" style="padding:24px;border-left:4px solid var(--gold)">
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">🏢 Company Settings</h3>
+<label class="label">Company Name</label><input id="s-company" class="input" value="Government Services" style="margin-bottom:12px">
+<label class="label">VAT Rate (%)</label><input id="s-vat" type="number" class="input" value="5" style="margin-bottom:12px">
+<label class="label">Currency</label><select id="s-cur" class="input" style="margin-bottom:12px"><option value="AED">AED</option><option value="USD">USD</option><option value="SSP">SSP</option></select>
+<button onclick="saveSets()" class="btn btn-gold" style="width:100%;margin-top:8px">Save Settings</button>
+</div>
+<div class="glass" style="padding:24px;border-left:4px solid var(--mint)">
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">🔐 License & System</h3>
+<p style="font-size:.85rem;margin-bottom:8px">License: <span class="badge badge-mint">Active - Trial</span></p>
+<p style="font-size:.85rem;margin-bottom:16px">Version: <span style="font-family:var(--mono)">2.0.0</span></p>
+<div class="grid-2" id="sys-stats" style="margin-bottom:16px"></div>
+<button onclick="exportAll()" class="btn btn-ghost" style="width:100%;margin-bottom:8px">📥 Export All Data</button>
+</div></div></div>
+
+</main></div></div>
+
+<!-- MODALS -->
+<!-- Customer Modal -->
+<div id="cm" class="modal-overlay" onclick="if(event.target===this)hideM('cm')"><div class="modal-box"><h3>Customer</h3><input type="hidden" id="cm-id">
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Name *</label><input id="cm-name" class="input" placeholder="Full name"></div><div><label class="label">Type *</label><select id="cm-type" class="input"><option value="individual">Individual</option><option value="company">Company</option><option value="hotel">Hotel</option><option value="restaurant">Restaurant</option><option value="store">Store</option><option value="supermarket">Supermarket</option><option value="factory">Factory</option><option value="pharmacy">Pharmacy</option></select></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Phone *</label><input id="cm-phone" class="input" placeholder="+971..."></div><div><label class="label">Email</label><input id="cm-email" type="email" class="input" placeholder="email@example.com"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Tax ID</label><input id="cm-taxid" class="input"></div><div><label class="label">Trade License</label><input id="cm-lic" class="input"></div></div>
+<div style="margin-bottom:16px"><label class="label">Address</label><input id="cm-addr" class="input" placeholder="Address"></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('cm')" class="btn btn-ghost">Cancel</button><button onclick="saveCust()" class="btn btn-gold">Save</button></div></div></div>
+
+<!-- Service Modal -->
+<div id="sm" class="modal-overlay" onclick="if(event.target===this)hideM('sm')"><div class="modal-box"><h3>Service</h3><input type="hidden" id="sm-id">
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Code *</label><input id="sm-code" class="input" placeholder="AD-U-01"></div><div><label class="label">Name *</label><input id="sm-name" class="input" placeholder="Service name"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Category *</label><select id="sm-cat" class="input"><option value="Utilities">Utilities</option><option value="Licensing">Licensing</option><option value="Transportation">Transportation</option><option value="Public Services">Public Services</option></select></div><div><label class="label">Center *</label><select id="sm-cen" class="input"><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option></select></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Price *</label><input id="sm-price" type="number" class="input" placeholder="0.00"></div><div><label class="label">Icon</label><input id="sm-icon" class="input" placeholder="⚡"></div></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('sm')" class="btn btn-ghost">Cancel</button><button onclick="saveSvc()" class="btn btn-gold">Save</button></div></div></div>
+
+<!-- User Modal -->
+<div id="um" class="modal-overlay" onclick="if(event.target===this)hideM('um')"><div class="modal-box"><h3>User</h3><input type="hidden" id="um-id">
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Username *</label><input id="um-user" class="input"></div><div><label class="label">Full Name *</label><input id="um-name" class="input"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Email *</label><input id="um-email" type="email" class="input"></div><div><label class="label">Phone</label><input id="um-phone" class="input"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Password *</label><input id="um-pass" type="password" class="input" placeholder="Min 8 chars"></div><div><label class="label">Role *</label><select id="um-role" class="input"><option value="cashier">Cashier</option><option value="monitor">Monitor</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option><option value="super_admin">Super Admin</option></select></div></div>
+<div class="grid-2" style="margin-bottom:16px"><div><label class="label">Gender</label><select id="um-gender" class="input"><option value="male">Male</option><option value="female">Female</option></select></div><div><label class="label">Branch</label><select id="um-branch" class="input"><option value="">Select...</option></select></div></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('um')" class="btn btn-ghost">Cancel</button><button onclick="saveUsr()" class="btn btn-gold">Save</button></div></div></div>
+
+<!-- Branch Modal -->
+<div id="bm" class="modal-overlay" onclick="if(event.target===this)hideM('bm')"><div class="modal-box"><h3>Branch</h3><input type="hidden" id="bm-id">
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Code *</label><input id="bm-code" class="input" placeholder="BR-AD-01"></div><div><label class="label">Name *</label><input id="bm-name" class="input"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">City</label><input id="bm-city" class="input"></div><div><label class="label">Emirate</label><input id="bm-emirate" class="input"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Phone</label><input id="bm-phone" class="input"></div><div><label class="label">Email</label><input id="bm-email" type="email" class="input"></div></div>
+<div style="margin-bottom:16px"><label class="label">Address</label><input id="bm-addr" class="input"></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('bm')" class="btn btn-ghost">Cancel</button><button onclick="saveBr()" class="btn btn-gold">Save</button></div></div></div>
+
+<!-- Invoice Preview Modal -->
+<div id="ivm" class="modal-overlay" onclick="if(event.target===this)hideM('ivm')"><div class="modal-box" style="max-width:800px;padding:0;background:#fff"><div id="iv-preview"></div>
+<div class="no-print" style="padding:16px 32px 24px;display:flex;gap:8px;justify-content:flex-end;background:var(--navy-lt);border-top:1px solid var(--gbr)"><button onclick="hideM('ivm')" class="btn btn-ghost">Close</button><button onclick="window.print()" class="btn btn-gold">🖨️ Print</button></div></div></div>
 <script>
-// ============================================
-// CONFIGURATION
-// ============================================
-const API_URL = 'https://gserp-backend.onrender.com/api';
+const API='https://gserp-backend.onrender.com/api';
+const $=id=>document.getElementById(id);
+let S={token:localStorage.getItem('gserp_t'),user:null,services:[],customers:[],invoices:[],users:[],branches:[],cart:[],selCust:null,lang:localStorage.getItem('gserp_l')||'en',theme:localStorage.getItem('gserp_th')||'dark',sets:JSON.parse(localStorage.getItem('gserp_s')||'{"vat":5,"currency":"AED","company":"Government Services"}'),offQ:JSON.parse(localStorage.getItem('gserp_oq')||'[]')};
 
-// ============================================
-// STATE
-// ============================================
-let state = {
-    user: null,
-    token: localStorage.getItem('gserp_token'),
-    services: [],
-    customers: [],
-    invoices: [],
-    cart: []
-};
+// API
+async function api(p,o={}){const h={'Content-Type':'application/json'};if(S.token)h['Authorization']='Bearer '+S.token;try{const r=await fetch(API+p,{...o,headers:h});const d=await r.json();if(!r.ok)throw new Error(d.message||d.error||'Failed');return d;}catch(e){if(e.message.includes('fetch')||e.message.includes('network')){updateOnline(false);throw new Error('Network error');}throw e;}}
 
-// ============================================
-// API HELPERS
-// ============================================
-async function api(endpoint, method = 'GET', body = null) {
-    const headers = { 'Content-Type': 'application/json' };
-    if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
-    
-    const options = { method, headers };
-    if (body) options.body = JSON.stringify(body);
-    
-    const res = await fetch(`${API_URL}${endpoint}`, options);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'API Error');
-    return data;
-}
+// Utils
+function toast(m,t='info'){const e=document.createElement('div');e.className='toast toast-'+t;e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>e.remove(),4000);}
+function showL(m='Loading...'){$('loading-text').textContent=m;$('loading-overlay').classList.add('active');}
+function hideL(){$('loading-overlay').classList.remove('active');}
+function showM(id){$(id).classList.add('active');}
+function hideM(id){$(id).classList.remove('active');}
+function updateOnline(on){$('sync-ind').className='sync-dot '+(on?'online':'offline');$('sync-txt').textContent=on?'Online':'Offline';if(on&&S.offQ.length)syncOff();}
+async function syncOff(){for(const i of S.offQ){try{await api(i.p,i.o);}catch{}}S.offQ=[];localStorage.setItem('gserp_oq','[]');toast('Offline data synced!','success');}
+window.addEventListener('online',()=>updateOnline(true));
+window.addEventListener('offline',()=>updateOnline(false));
+function setTheme(t){S.theme=t;localStorage.setItem('gserp_th',t);document.documentElement.setAttribute('data-theme',t);$('theme-sel').value=t;}
+function toggleLang(){S.lang=S.lang==='en'?'ar':'en';localStorage.setItem('gserp_l',S.lang);document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';$('lang-btn').textContent=S.lang==='ar'?'🌐 AR':'🌐 EN';}
+function fmtDate(d){if(!d)return'-';const dt=new Date(d);return dt.toLocaleDateString()+' '+dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
+function maxDisc(){const r=S.user?.role;return r==='super_admin'?100:r==='admin'?75:r==='supervisor'?50:r==='cashier'?20:0;}
 
-function toast(msg, type = 'info') {
-    const t = document.createElement('div');
-    t.className = `toast ${type}`;
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
+// Auth
+async function doLogin(){const u=$('login-user').value.trim(),p=$('login-pass').value;if(!u||!p){$('login-error').textContent='Enter username and password';$('login-error').style.display='block';return;}showL('Authenticating...');try{const r=await api('/auth/login',{method:'POST',body:JSON.stringify({username:u,password:p})});S.token=r.token||r.data?.token;S.user=r.user||r.data?.user||r.data;localStorage.setItem('gserp_t',S.token);$('login-error').style.display='none';initApp();}catch(e){$('login-error').textContent=e.message||'Invalid credentials';$('login-error').style.display='block';}hideL();}
+function doLogout(){if(!confirm('Logout from GSERP?'))return;localStorage.removeItem('gserp_t');S.token=null;S.user=null;location.reload();}
 
-function showLoading() { document.getElementById('loading-overlay').classList.remove('hidden'); }
-function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+// Init
+async function initApp(){$('login-screen').style.display='none';$('app').style.display='flex';
+if(!S.user){try{const me=await api('/auth/me');S.user=me.data||me.user||me;}catch{localStorage.removeItem('gserp_t');location.reload();return;}}
+$('hdr-user').textContent=S.user.full_name||S.user.fullName||S.user.username;
+$('hdr-role').textContent=(S.user.role||'').replace(/_/g,' ');
+buildSidebar();startClock();setTheme(S.theme);updateOnline(navigator.onLine);
+if(S.lang==='ar'){document.documentElement.dir='rtl';$('lang-btn').textContent='🌐 AR';}
+await Promise.all([loadSvc(),loadCust(),loadInv(),loadBr()]);
+if(['super_admin','admin','supervisor'].includes(S.user.role))await loadUsr();
+loadDash();showPage('dashboard');}
 
-// ============================================
-// AUTH
-// ============================================
-async function checkAPI() {
-    try {
-        await api('/health');
-        document.getElementById('api-indicator').textContent = '✅ Connected';
-        document.getElementById('api-indicator').className = 'text-green-400';
-    } catch {
-        document.getElementById('api-indicator').textContent = '❌ Offline';
-        document.getElementById('api-indicator').className = 'text-red-400';
-    }
-}
+// Clock
+function startClock(){const t=()=>{const n=new Date();$('hdr-clock').textContent=n.toLocaleTimeString();$('hdr-date').textContent=n.toDateString().toUpperCase();};t();setInterval(t,1000);}
 
-async function attemptLogin() {
-    const username = document.getElementById('login-user').value;
-    const password = document.getElementById('login-pass').value;
-    
-    if (!username || !password) { toast('Enter credentials', 'error'); return; }
-    
-    const btn = document.getElementById('login-btn');
-    btn.innerHTML = '<span class="loading"></span>';
-    btn.disabled = true;
-    
-    try {
-        const data = await api('/auth/login', 'POST', { username, password });
-        state.token = data.data.accessToken;
-        state.user = data.data.user;
-        localStorage.setItem('gserp_token', state.token);
-        toast('Login successful!', 'success');
-        initApp();
-    } catch (e) {
-        document.getElementById('error-msg').classList.remove('hidden');
-        toast(e.message, 'error');
-    } finally {
-        btn.innerHTML = 'Authorize Entry';
-        btn.disabled = false;
-    }
-}
+// Sidebar
+function buildSidebar(){const r=S.user?.role||'cashier';const m=[
+{id:'dashboard',ic:'📊',lb:'Dashboard',rl:['super_admin','admin','supervisor','cashier','monitor']},
+{id:'pos',ic:'💳',lb:'POS Terminal',rl:['super_admin','admin','supervisor','cashier']},
+{id:'invoices',ic:'📄',lb:'Invoices',rl:['super_admin','admin','supervisor','cashier','monitor']},
+{id:'customers',ic:'👥',lb:'Customers',rl:['super_admin','admin','supervisor','cashier']},
+{id:'services',ic:'🏛️',lb:'Services',rl:['super_admin','admin']},
+{id:'users',ic:'👤',lb:'Users',rl:['super_admin','admin','supervisor']},
+{id:'branches',ic:'🏢',lb:'Branches',rl:['super_admin','admin']},
+{id:'hr',ic:'⏰',lb:'HR & Attendance',rl:['super_admin','admin','supervisor']},
+{id:'reports',ic:'📈',lb:'Reports',rl:['super_admin','admin','supervisor','monitor']},
+{id:'settings',ic:'⚙️',lb:'Settings',rl:['super_admin']}];
+$('sidebar').innerHTML='<p style="font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.2em;font-weight:700;margin-bottom:16px;padding:0 16px">Menu</p>'+
+m.filter(x=>x.rl.includes(r)).map(x=>`<button class="sidebar-btn${x.id==='dashboard'?' active-tab':''}" onclick="showPage('${x.id}')" id="nav-${x.id}"><span style="font-size:1.1rem;width:24px;text-align:center">${x.ic}</span>${x.lb}</button>`).join('')+
+'<div style="flex:1"></div><div class="glass" style="padding:12px;background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.1)"><p style="font-size:.6rem;color:var(--success);text-transform:uppercase;font-weight:700;margin-bottom:4px">System</p><div style="display:flex;align-items:center;gap:6px"><span class="sync-dot online"></span><span style="font-size:.75rem">Connected</span></div></div>';}
 
-function logout() {
-    if (confirm('Logout?')) {
-        localStorage.removeItem('gserp_token');
-        location.reload();
-    }
-}
+function showPage(id){document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active-tab'));const pg=$('pg-'+id),nv=$('nav-'+id);if(pg)pg.classList.add('active');if(nv)nv.classList.add('active-tab');
+if(id==='pos')renderPOS();if(id==='invoices')loadInv();if(id==='customers')loadCust();if(id==='services')loadSvc();if(id==='users')loadUsr();if(id==='branches')loadBr();if(id==='hr')loadHR();if(id==='settings')loadSets();if(id==='dashboard')loadDash();}
 
-// ============================================
-// INIT APP
-// ============================================
-async function initApp() {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app-container').classList.remove('hidden');
-    
-    document.getElementById('current-username').textContent = state.user.fullName || state.user.username;
-    document.getElementById('user-role').textContent = state.user.role.replace('_', ' ').toUpperCase();
-    
-    const isAdmin = ['super_admin', 'admin', 'supervisor'].includes(state.user.role);
-    document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', !isAdmin));
-    
-    // Clock
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('live-clock').textContent = now.toLocaleTimeString();
-        document.getElementById('live-date').textContent = now.toDateString().toUpperCase();
-    }, 1000);
-    
-    // Load data
-    await loadAll();
-}
+// Dashboard
+function loadDash(){const rev=S.invoices.reduce((s,i)=>s+parseFloat(i.total||0),0);const today=S.invoices.filter(i=>{const d=new Date(i.createdAt||i.created_at||i.date||0);return d.toDateString()===new Date().toDateString();});const tRev=today.reduce((s,i)=>s+parseFloat(i.total||0),0);
+$('d-stats').innerHTML=[{l:"TODAY'S REVENUE",v:tRev.toFixed(2)+' '+S.sets.currency,c:'var(--gold)'},{l:'INVOICES TODAY',v:today.length,c:'var(--mint)'},{l:'TOTAL CUSTOMERS',v:S.customers.length,c:'var(--txt)'},{l:'ACTIVE SERVICES',v:S.services.filter(s=>s.status==='active').length,c:'var(--info)'}].map(s=>`<div class="stat-card"><p class="sl">${s.l}</p><p class="sv" style="color:${s.c}">${s.v}</p></div>`).join('');
+$('d-actions').innerHTML=[{l:'New Sale',ic:'💳',p:'pos'},{l:'Customers',ic:'👥',p:'customers'},{l:'Invoices',ic:'📄',p:'invoices'},{l:'Reports',ic:'📈',p:'reports'}].map(a=>`<button onclick="showPage('${a.p}')" class="btn btn-ghost">${a.ic} ${a.l}</button>`).join('');
+const rec=S.invoices.slice(0,5);$('d-recent').innerHTML=rec.length?rec.map(i=>`<div class="cart-row" style="cursor:pointer" onclick="viewInv('${i.id}')"><div><p style="font-size:.8rem;font-weight:600;font-family:var(--mono);color:var(--gold)">${i.invoiceNumber||i.id}</p><p style="font-size:.7rem;color:var(--muted)">${i.customer?.customerName||i.customerName||'-'}</p></div><p style="font-size:.85rem;font-weight:600;color:var(--mint);font-family:var(--mono)">${parseFloat(i.total||0).toFixed(2)}</p></div>`).join(''):'<p style="color:var(--muted);text-align:center;padding:20px">No invoices yet</p>';}
 
-async function loadAll() {
-    showLoading();
-    try {
-        const [services, customers, invoices] = await Promise.all([
-            api('/services'),
-            api('/customers'),
-            api('/invoices')
-        ]);
-        state.services = services.data || [];
-        state.customers = customers.data || [];
-        state.invoices = invoices.data || [];
-        
-        renderPOS();
-        renderTables();
-        updateDashboard();
-        populateCustomerSelect();
-        
-        if (['super_admin', 'admin'].includes(state.user.role)) {
-            const [users, branches] = await Promise.all([api('/users'), api('/branches')]);
-            renderUsers(users.data || []);
-            renderBranches(branches.data || []);
-        }
-    } catch (e) {
-        toast('Failed to load data: ' + e.message, 'error');
-    }
-    hideLoading();
-}
+// Services
+async function loadSvc(){try{const r=await api('/services');S.services=r.data||r||[];}catch{}renderSvcTbl();}
+function renderSvcTbl(){$('svc-tb').innerHTML=S.services.length?S.services.map(s=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${s.itemCode||s.item_code||'-'}</td><td>${s.icon||''} ${s.name}</td><td><span class="badge badge-info">${s.category}</span></td><td>${s.center}</td><td style="font-family:var(--mono);font-weight:600">${parseFloat(s.basePrice||s.base_price||0).toFixed(2)}</td><td>${s.vatApplicable!==false?'✅':'❌'}</td><td><span class="badge ${s.status==='active'?'badge-success':'badge-danger'}">${s.status}</span></td><td><button onclick="editSvc('${s.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No services</td></tr>';}
+function editSvc(id){const s=S.services.find(x=>x.id===id);if(!s)return;$('sm-id').value=id;$('sm-code').value=s.itemCode||s.item_code||'';$('sm-name').value=s.name||'';$('sm-cat').value=s.category||'';$('sm-cen').value=s.center||'';$('sm-price').value=s.basePrice||s.base_price||0;$('sm-icon').value=s.icon||'';showM('sm');}
+async function saveSvc(){const id=$('sm-id').value;const b={itemCode:$('sm-code').value,name:$('sm-name').value,category:$('sm-cat').value,center:$('sm-cen').value,basePrice:parseFloat($('sm-price').value),icon:$('sm-icon').value,vatApplicable:true};if(!b.name||!b.itemCode){toast('Name and Code required','error');return;}try{if(id)await api('/services/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/services',{method:'POST',body:JSON.stringify(b)});hideM('sm');$('sm-id').value='';toast('Service saved!','success');await loadSvc();}catch(e){toast(e.message,'error');}}
 
-// ============================================
-// DASHBOARD
-// ============================================
-function updateDashboard() {
-    const today = new Date().toLocaleDateString();
-    const todayInvoices = state.invoices.filter(i => new Date(i.createdAt).toLocaleDateString() === today);
-    const revenue = todayInvoices.reduce((s, i) => s + parseFloat(i.total || 0), 0);
-    
-    document.getElementById('stat-revenue').textContent = revenue.toFixed(2) + ' AED';
-    document.getElementById('stat-invoices').textContent = todayInvoices.length;
-    document.getElementById('stat-customers').textContent = state.customers.length;
-    document.getElementById('stat-services').textContent = state.services.filter(s => s.status === 'active').length;
-    
-    const recent = state.invoices.slice(0, 5);
-    document.getElementById('recent-invoices').innerHTML = recent.length 
-        ? recent.map(i => `<div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
-            <div><p class="font-semibold text-sm">${i.invoiceNumber}</p><p class="text-xs text-gray-400">${i.customer?.customerName || 'Walk-in'}</p></div>
-            <p class="text-[#64ffda] font-bold">${parseFloat(i.total||0).toFixed(2)} AED</p></div>`).join('')
-        : '<p class="text-gray-500 text-sm text-center">No invoices yet</p>';
-}
-
-// ============================================
 // POS
-// ============================================
-function renderPOS() {
-    const grid = document.getElementById('pos-grid');
-    const center = document.getElementById('center-filter').value;
-    const search = document.getElementById('search-service').value.toLowerCase();
-    
-    let filtered = state.services.filter(s => s.status === 'active');
-    if (center !== 'all') filtered = filtered.filter(s => s.center === center);
-    if (search) filtered = filtered.filter(s => s.name.toLowerCase().includes(search) || s.itemCode.toLowerCase().includes(search));
-    
-    if (!filtered.length) {
-        grid.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">No services found</p>';
-        return;
-    }
-    
-    // Group by category
-    const grouped = {};
-    filtered.forEach(s => { if (!grouped[s.category]) grouped[s.category] = []; grouped[s.category].push(s); });
-    
-    let html = '';
-    for (const cat in grouped) {
-        html += `<div class="col-span-3 mt-4 first:mt-0"><p class="text-xs text-gray-400 uppercase font-bold mb-2">${cat}</p></div>`;
-        grouped[cat].forEach(s => {
-            html += `<div onclick="addToCart('${s.id}')" class="glass p-4 rounded-xl pos-card border border-white/5 text-center">
-                <span class="text-2xl block mb-1">${s.icon || '📋'}</span>
-                <p class="text-xs font-bold">${s.name}</p>
-                <p class="text-[10px] text-[#64ffda] mt-1">${parseFloat(s.basePrice).toFixed(2)} AED</p>
-            </div>`;
-        });
-    }
-    grid.innerHTML = html;
-}
+function renderPOS(){const cf=$('pos-cf').value,sf=($('pos-sf')?.value||'').toLowerCase();let f=S.services.filter(s=>s.status==='active');if(cf!=='all')f=f.filter(s=>s.center===cf);if(sf)f=f.filter(s=>(s.name||'').toLowerCase().includes(sf)||(s.itemCode||s.item_code||'').toLowerCase().includes(sf)||(s.category||'').toLowerCase().includes(sf));
+const g={};f.forEach(s=>{(g[s.category]=g[s.category]||[]).push(s);});
+let h='';for(const[c,items]of Object.entries(g)){h+=`<div style="margin-bottom:20px"><p style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;margin-bottom:10px">${c}</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">${items.map(s=>`<div class="pos-item" onclick="addCart('${s.id}')"><div style="font-size:2rem;margin-bottom:8px">${s.icon||'📦'}</div><div style="font-size:.75rem;font-weight:600;line-height:1.3">${s.name}</div><div style="font-size:.7rem;color:var(--mint);font-weight:700;margin-top:6px;font-family:var(--mono)">${parseFloat(s.basePrice||s.base_price||0).toFixed(2)} ${S.sets.currency}</div></div>`).join('')}</div></div>`;}
+$('pos-grid').innerHTML=h||'<p style="color:var(--muted);text-align:center;padding:30px">No services found</p>';}
 
-function filterServices() { renderPOS(); }
+function addCart(sid){const s=S.services.find(x=>x.id===sid);if(!s)return;const ex=S.cart.find(c=>c.sid===sid);if(ex)ex.qty++;else S.cart.push({sid,name:s.name,price:parseFloat(s.basePrice||s.base_price||0),icon:s.icon||'📦',code:s.itemCode||s.item_code,center:s.center,qty:1});updateCartUI();toast(s.name+' added','success');}
+function rmCart(i){S.cart.splice(i,1);updateCartUI();}
+function chgQty(i,d){S.cart[i].qty=Math.max(1,S.cart[i].qty+d);updateCartUI();}
+function clearCart(){if(!S.cart.length)return;if(!confirm('Clear cart?'))return;S.cart=[];updateCartUI();}
+function updateCartUI(){$('pos-cart').innerHTML=S.cart.length?S.cart.map((c,i)=>`<div class="cart-row"><div style="flex:1"><p style="font-size:.8rem;font-weight:600">${c.icon} ${c.name}</p><p style="font-size:.65rem;color:var(--muted)">${c.code} • ${c.center}</p></div><div style="display:flex;align-items:center;gap:10px"><div class="qty-ctrl"><button onclick="chgQty(${i},-1)">−</button><span>${c.qty}</span><button onclick="chgQty(${i},1)">+</button></div><p style="font-size:.8rem;font-weight:600;color:var(--mint);font-family:var(--mono);width:80px;text-align:right">${(c.price*c.qty).toFixed(2)}</p><button onclick="rmCart(${i})" style="color:var(--danger);background:none;border:none;cursor:pointer;font-size:.8rem">✕</button></div></div>`).join(''):'<p style="color:var(--dim);text-align:center;padding:30px;font-size:.8rem">Cart is empty</p>';updateTotals();}
+function updateTotals(){const sub=S.cart.reduce((s,c)=>s+c.price*c.qty,0);const dp=Math.min(parseFloat($('pos-disc')?.value||0),maxDisc());const da=sub*dp/100;const af=sub-da;const vt=af*(S.sets.vat/100);const tot=af+vt;$('c-sub').textContent=sub.toFixed(2)+' '+S.sets.currency;$('c-disc').textContent='-'+da.toFixed(2)+' '+S.sets.currency;$('c-vat').textContent=vt.toFixed(2)+' '+S.sets.currency;$('c-total').textContent=tot.toFixed(2)+' '+S.sets.currency;}
 
-function addToCart(id) {
-    const service = state.services.find(s => s.id === id);
-    if (service) {
-        state.cart.push({ ...service, cartId: Date.now() });
-        updateCart();
-        toast(`Added: ${service.name}`, 'success');
-    }
-}
+// POS Customer
+function searchPC(t){if(t.length<2){$('pos-cr').innerHTML='';return;}const tl=t.toLowerCase();const m=S.customers.filter(c=>(c.customerName||c.customer_name||'').toLowerCase().includes(tl)||(c.mobile||'').includes(tl)||(c.email||'').toLowerCase().includes(tl));
+$('pos-cr').innerHTML=m.slice(0,5).map(c=>`<div onclick="selPC('${c.id}')" style="padding:8px;cursor:pointer;border-radius:var(--radsm);transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'"><p style="font-weight:600;font-size:.8rem">${c.customerName||c.customer_name}</p><p style="font-size:.7rem;color:var(--muted)">${c.mobile||''} • ${c.email||''}</p></div>`).join('')||'<p style="font-size:.75rem;color:var(--muted);padding:8px">No matches</p>';}
+function selPC(id){const c=S.customers.find(x=>x.id===id);if(!c)return;S.selCust=c;$('pos-cn').textContent=c.customerName||c.customer_name;$('pos-cd').textContent=(c.mobile||'')+(c.email?' • '+c.email:'');$('pos-csel').style.display='block';$('pos-cr').innerHTML='';$('pos-cs').value='';}
+function clearPC(){S.selCust=null;$('pos-csel').style.display='none';}
 
-function removeFromCart(cartId) {
-    state.cart = state.cart.filter(i => i.cartId !== cartId);
-    updateCart();
-}
+// Process Payment
+async function processPayment(){if(!S.cart.length){toast('Cart is empty','error');return;}if(!S.selCust){toast('Select a customer first','warning');return;}
+const sub=S.cart.reduce((s,c)=>s+c.price*c.qty,0);const dp=Math.min(parseFloat($('pos-disc')?.value||0),maxDisc());const da=sub*dp/100;const af=sub-da;const vt=af*(S.sets.vat/100);const tot=af+vt;
+const inv={customerId:S.selCust.id,items:S.cart.map(c=>({serviceId:c.sid,itemCode:c.code,name:c.name,quantity:c.qty,unitPrice:c.price,totalPrice:c.price*c.qty})),subtotal:sub,vatRate:S.sets.vat,vatAmount:vt,discount:da,total:tot,paymentMethod:$('pos-pay').value};
+showL('Processing...');try{const r=await api('/invoices',{method:'POST',body:JSON.stringify(inv)});const iv=r.data||r;S.invoices.unshift(iv);S.cart=[];S.selCust=null;$('pos-csel').style.display='none';$('pos-disc').value=0;updateCartUI();toast('Invoice created!','success');viewInv(iv.id);}catch(e){if(e.message.includes('Network')){const oi={...inv,id:'OFF-'+Date.now(),invoiceNumber:'OFF-'+Date.now(),createdAt:new Date().toISOString(),status:'pending',customerName:S.selCust.customerName||S.selCust.customer_name};S.invoices.unshift(oi);S.offQ.push({p:'/invoices',o:{method:'POST',body:JSON.stringify(inv)}});localStorage.setItem('gserp_oq',JSON.stringify(S.offQ));S.cart=[];S.selCust=null;$('pos-csel').style.display='none';updateCartUI();toast('Saved offline','warning');}else toast(e.message,'error');}hideL();}
 
-function clearCart() {
-    if (state.cart.length && confirm('Clear cart?')) {
-        state.cart = [];
-        updateCart();
-    }
-}
+// Invoices
+async function loadInv(){try{const r=await api('/invoices');S.invoices=r.data||r||[];}catch{}renderInvTbl();}
+function renderInvTbl(){$('inv-tb').innerHTML=S.invoices.length?S.invoices.map(i=>`<tr><td style="font-family:var(--mono);color:var(--gold);font-weight:600">${i.invoiceNumber||i.invoice_number||i.id}</td><td>${i.customer?.customerName||i.customer?.customer_name||i.customerName||'-'}</td><td style="font-size:.8rem;color:var(--muted)">${fmtDate(i.createdAt||i.created_at||i.date)}</td><td style="font-family:var(--mono);font-weight:600;color:var(--mint)">${parseFloat(i.total||0).toFixed(2)} ${S.sets.currency}</td><td><span class="badge badge-gold">${i.paymentMethod||i.payment_method||'-'}</span></td><td><span class="badge ${(i.paymentStatus||i.status)==='paid'?'badge-success':'badge-info'}">${i.paymentStatus||i.status||'paid'}</span></td><td><button onclick="viewInv('${i.id}')" class="btn btn-gold btn-sm">View</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No invoices</td></tr>';}
 
-function updateCart() {
-    const container = document.getElementById('cart-items');
-    if (!state.cart.length) {
-        container.innerHTML = '<p class="text-gray-500 text-xs text-center py-4">Empty cart</p>';
-        document.getElementById('subtotal').textContent = '0.00 AED';
-        document.getElementById('vat').textContent = '0.00 AED';
-        document.getElementById('total').textContent = '0.00 AED';
-        return;
-    }
-    
-    container.innerHTML = state.cart.map(i => `<div class="flex justify-between items-center py-2 border-b border-white/5">
-        <div><p class="text-xs font-semibold">${i.name}</p><p class="text-[10px] text-gray-400">${i.itemCode}</p></div>
-        <div class="flex items-center gap-2">
-            <span class="text-xs text-[#64ffda]">${parseFloat(i.basePrice).toFixed(2)}</span>
-            <button onclick="removeFromCart(${i.cartId})" class="text-red-400 text-xs">✕</button>
-        </div>
-    </div>`).join('');
-    
-    const subtotal = state.cart.reduce((s, i) => s + parseFloat(i.basePrice), 0);
-    const vat = subtotal * 0.05;
-    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' AED';
-    document.getElementById('vat').textContent = vat.toFixed(2) + ' AED';
-    document.getElementById('total').textContent = (subtotal + vat).toFixed(2) + ' AED';
-}
+function viewInv(id){const i=S.invoices.find(x=>x.id===id);if(!i)return;
+const items=i.items||i.invoiceItems||[];
+$('iv-preview').innerHTML=`<div class="invoice-print">
+<div style="display:flex;justify-content:space-between;align-items:start;border-bottom:2px solid #e5e7eb;padding-bottom:24px;margin-bottom:24px">
+<div><h1 style="font-size:1.5rem;font-weight:800;color:#0a192f;margin-bottom:4px">GOVERNMENT SERVICES</h1><p style="font-size:.8rem;color:#6b7280">United Arab Emirates</p><p style="font-size:.8rem;color:#6b7280">TRN: 100123456700003</p></div>
+<div style="text-align:right"><div style="width:48px;height:48px;background:#d4af37;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-bottom:8px"><span style="font-size:1.2rem;font-weight:800;color:#0a192f">GS</span></div><p style="font-size:.7rem;color:#9ca3af">GSERP PRO</p></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+<div><p style="font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Invoice Details</p>
+<p style="font-size:.85rem;margin-bottom:4px"><strong>Invoice #:</strong> ${i.invoiceNumber||i.id}</p>
+<p style="font-size:.85rem;margin-bottom:4px"><strong>Date:</strong> ${fmtDate(i.createdAt||i.created_at||i.date)}</p>
+<p style="font-size:.85rem;margin-bottom:4px"><strong>Payment:</strong> ${(i.paymentMethod||i.payment_method||'').toUpperCase()}</p></div>
+<div><p style="font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Customer</p>
+<p style="font-size:.85rem;margin-bottom:4px"><strong>Name:</strong> ${i.customer?.customerName||i.customer?.customer_name||i.customerName||'-'}</p>
+<p style="font-size:.85rem;margin-bottom:4px"><strong>Phone:</strong> ${i.customer?.mobile||'-'}</p>
+<p style="font-size:.85rem"><strong>Email:</strong> ${i.customer?.email||'-'}</p></div></div>
+<table><thead><tr><th>#</th><th>Service</th><th>Code</th><th>Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead>
+<tbody>${items.map((it,idx)=>`<tr><td>${idx+1}</td><td>${it.name}</td><td>${it.itemCode||it.item_code||'-'}</td><td>${it.quantity||1}</td><td style="text-align:right">${parseFloat(it.unitPrice||it.unit_price||0).toFixed(2)}</td><td style="text-align:right;font-weight:600">${parseFloat(it.totalPrice||it.total_price||0).toFixed(2)}</td></tr>`).join('')}</tbody></table>
+<div style="display:flex;justify-content:flex-end;margin-top:16px"><div style="width:240px">
+<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">Subtotal:</span><span style="font-weight:600">${parseFloat(i.subtotal||0).toFixed(2)} ${S.sets.currency}</span></div>
+${parseFloat(i.discount||0)>0?`<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">Discount:</span><span style="font-weight:600;color:#ef4444">-${parseFloat(i.discount||0).toFixed(2)} ${S.sets.currency}</span></div>`:''}
+<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">VAT (${i.vatRate||S.sets.vat}%):</span><span style="font-weight:600">${parseFloat(i.vatAmount||i.vat_amount||0).toFixed(2)} ${S.sets.currency}</span></div>
+<div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:700;border-top:2px solid #d1d5db;padding-top:8px"><span>Total:</span><span style="color:#d4af37">${parseFloat(i.total||0).toFixed(2)} ${S.sets.currency}</span></div></div></div>
+<div style="border-top:2px solid #e5e7eb;padding-top:16px;margin-top:24px;text-align:center"><p style="font-size:.75rem;color:#9ca3af">Thank you for using Government Services ERP</p><p style="font-size:.7rem;color:#9ca3af;margin-top:4px">Computer-generated invoice - no signature required</p></div></div>`;
+showM('ivm');}
 
-function processPayment() {
-    if (!state.cart.length) { toast('Cart is empty', 'error'); return; }
-    populateCustomerSelect();
-    document.getElementById('customer-modal').classList.add('active');
-}
+// Customers
+async function loadCust(){try{const r=await api('/customers');S.customers=r.data||r||[];}catch{}renderCustTbl();}
+function renderCustTbl(){const s=($('cust-s')?.value||'').toLowerCase();let f=S.customers;if(s)f=f.filter(c=>(c.customerName||c.customer_name||'').toLowerCase().includes(s)||(c.mobile||'').includes(s)||(c.email||'').toLowerCase().includes(s));
+$('cust-tb').innerHTML=f.length?f.map(c=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${c.customerCode||c.customer_code||'-'}</td><td style="font-weight:600">${c.customerName||c.customer_name}</td><td><span class="badge badge-info">${c.customerType||c.customer_type||'-'}</span></td><td>${c.mobile||'-'}</td><td style="color:var(--muted)">${c.email||'-'}</td><td><span class="badge ${c.status==='active'?'badge-success':'badge-danger'}">${c.status||'active'}</span></td><td><button onclick="editCust('${c.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No customers</td></tr>';}
 
-function populateCustomerSelect() {
-    const select = document.getElementById('customer-select');
-    select.innerHTML = '<option value="">-- Select or Add New --</option>' + 
-        state.customers.map(c => `<option value="${c.id}">${c.customerName} (${c.customerCode})</option>`).join('');
-}
+function editCust(id){const c=S.customers.find(x=>x.id===id);if(!c)return;$('cm-id').value=id;$('cm-name').value=c.customerName||c.customer_name||'';$('cm-type').value=c.customerType||c.customer_type||'individual';$('cm-phone').value=c.mobile||'';$('cm-email').value=c.email||'';$('cm-taxid').value=c.taxId||c.tax_id||'';$('cm-lic').value=c.tradeLicense||c.trade_license||'';$('cm-addr').value=c.address||'';showM('cm');}
+async function saveCust(){const id=$('cm-id').value;const b={customerName:$('cm-name').value,customerType:$('cm-type').value,mobile:$('cm-phone').value,email:$('cm-email').value,taxId:$('cm-taxid').value,tradeLicense:$('cm-lic').value,address:$('cm-addr').value};if(!b.customerName||!b.mobile){toast('Name and Phone required','error');return;}try{if(id)await api('/customers/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/customers',{method:'POST',body:JSON.stringify(b)});hideM('cm');$('cm-id').value='';toast('Customer saved!','success');await loadCust();}catch(e){toast(e.message,'error');}}
 
-async function createInvoice() {
-    const customerId = document.getElementById('customer-select').value;
-    const customerName = document.getElementById('customer-name').value;
-    const phone = document.getElementById('customer-phone').value;
-    const email = document.getElementById('customer-email').value;
-    const paymentMethod = document.getElementById('payment-method').value;
-    
-    if (!customerId && !customerName) { toast('Select or enter customer', 'error'); return; }
-    
-    showLoading();
-    try {
-        let finalCustomerId = customerId;
-        
-        // Create new customer if needed
-        if (!customerId && customerName) {
-            const newCustomer = await api('/customers', 'POST', {
-                customerName,
-                customerType: 'individual',
-                mobile: phone,
-                email
-            });
-            finalCustomerId = newCustomer.data.id;
-            state.customers.push(newCustomer.data);
-        }
-        
-        // Create invoice
-        const items = state.cart.map(i => ({
-            serviceId: i.id,
-            quantity: 1,
-            unitPrice: parseFloat(i.basePrice)
-        }));
-        
-        const invoice = await api('/invoices', 'POST', {
-            customerId: finalCustomerId,
-            paymentMethod,
-            items
-        });
-        
-        state.invoices.unshift(invoice.data);
-        state.cart = [];
-        updateCart();
-        closeModal('customer-modal');
-        renderTables();
-        updateDashboard();
-        
-        // Show invoice
-        showInvoice(invoice.data);
-        toast('Invoice created!', 'success');
-    } catch (e) {
-        toast('Failed: ' + e.message, 'error');
-    }
-    hideLoading();
-}
+// Users
+async function loadUsr(){try{const r=await api('/users');S.users=r.data||r||[];}catch{}renderUsrTbl();}
+function renderUsrTbl(){$('usr-tb').innerHTML=S.users.length?S.users.map(u=>`<tr><td style="font-weight:600">${u.username}</td><td>${u.full_name||u.fullName||'-'}</td><td style="color:var(--muted)">${u.email||'-'}</td><td><span class="badge badge-gold">${(u.role||'').replace(/_/g,' ')}</span></td><td><span class="badge ${u.status==='active'?'badge-success':'badge-danger'}">${u.status||'active'}</span></td><td style="font-size:.75rem;color:var(--muted)">${u.lastLogin||u.last_login?fmtDate(u.lastLogin||u.last_login):'Never'}</td><td><button onclick="editUsr('${u.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No users</td></tr>';}
 
-function showInvoice(inv) {
-    const items = inv.invoiceItems || [];
-    document.getElementById('invoice-content').innerHTML = `
-        <div class="border-b-2 pb-4 mb-4">
-            <div class="flex justify-between">
-                <div><h1 class="text-2xl font-bold text-[#0a192f]">GOVERNMENT SERVICES</h1><p class="text-sm text-gray-600">UAE</p></div>
-                <div class="text-right"><div class="w-12 h-12 bg-[#d4af37] rounded-lg flex items-center justify-center"><span class="text-lg font-bold text-white">GS</span></div></div>
-            </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
-            <div><p class="text-gray-500">Invoice #</p><p class="font-bold">${inv.invoiceNumber}</p></div>
-            <div><p class="text-gray-500">Date</p><p>${new Date(inv.createdAt).toLocaleString()}</p></div>
-            <div><p class="text-gray-500">Customer</p><p class="font-semibold">${inv.customer?.customerName || 'Walk-in'}</p></div>
-            <div><p class="text-gray-500">Payment</p><p>${inv.paymentMethod?.toUpperCase()}</p></div>
-        </div>
-        <table class="w-full mb-4 text-sm">
-            <thead class="bg-gray-100"><tr><th class="p-2 text-left">#</th><th class="p-2 text-left">Service</th><th class="p-2 text-right">Price</th></tr></thead>
-            <tbody>${items.map((item, idx) => `<tr class="border-t"><td class="p-2">${idx+1}</td><td class="p-2">${item.service?.name || item.name || 'Service'}</td><td class="p-2 text-right">${parseFloat(item.totalPrice || item.unitPrice).toFixed(2)} AED</td></tr>`).join('')}</tbody>
-        </table>
-        <div class="text-right text-sm">
-            <p>Subtotal: <strong>${parseFloat(inv.subtotal).toFixed(2)} AED</strong></p>
-            <p>VAT (5%): <strong>${parseFloat(inv.vatAmount).toFixed(2)} AED</strong></p>
-            <p class="text-lg mt-2">Total: <strong class="text-[#d4af37]">${parseFloat(inv.total).toFixed(2)} AED</strong></p>
-        </div>
-        <div class="text-center text-xs text-gray-500 mt-4 pt-4 border-t">Thank you for using Government Services</div>
-    `;
-    document.getElementById('invoice-modal').classList.add('active');
-}
+function editUsr(id){const u=S.users.find(x=>x.id===id);if(!u)return;$('um-id').value=id;$('um-user').value=u.username||'';$('um-name').value=u.full_name||u.fullName||'';$('um-email').value=u.email||'';$('um-phone').value=u.mobile||'';$('um-pass').value='';$('um-role').value=u.role||'cashier';$('um-gender').value=u.gender||'male';showM('um');}
+async function saveUsr(){const id=$('um-id').value;const b={username:$('um-user').value,fullName:$('um-name').value,email:$('um-email').value,mobile:$('um-phone').value,role:$('um-role').value,gender:$('um-gender').value};const pw=$('um-pass').value;if(pw)b.password=pw;if(!b.username||!b.email){toast('Username and Email required','error');return;}if(!id&&!pw){toast('Password required for new user','error');return;}try{if(id)await api('/users/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/users',{method:'POST',body:JSON.stringify(b)});hideM('um');$('um-id').value='';toast('User saved!','success');await loadUsr();}catch(e){toast(e.message,'error');}}
 
-// ============================================
-// TABLES
-// ============================================
-function renderTables() {
-    // Services
-    document.getElementById('services-table').innerHTML = state.services.length 
-        ? state.services.map(s => `<tr class="hover:bg-white/5"><td class="p-4 text-[#d4af37]">${s.itemCode}</td><td class="p-4">${s.icon||''} ${s.name}</td><td class="p-4 text-gray-400">${s.category}</td><td class="p-4 text-gray-400">${s.center}</td><td class="p-4 text-[#64ffda]">${parseFloat(s.basePrice).toFixed(2)} AED</td></tr>`).join('')
-        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No services</td></tr>';
-    
-    // Customers
-    document.getElementById('customers-table').innerHTML = state.customers.length 
-        ? state.customers.map(c => `<tr class="hover:bg-white/5"><td class="p-4 text-[#d4af37]">${c.customerCode}</td><td class="p-4">${c.customerName}</td><td class="p-4 text-gray-400">${c.customerType}</td><td class="p-4 text-gray-400">${c.mobile||'-'}</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${c.status==='active'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${c.status}</span></td></tr>`).join('')
-        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No customers</td></tr>';
-    
-    // Invoices
-    document.getElementById('invoices-table').innerHTML = state.invoices.length 
-        ? state.invoices.map(i => `<tr class="hover:bg-white/5 cursor-pointer" onclick='showInvoice(${JSON.stringify(i).replace(/'/g,"\\'")})'><td class="p-4 text-[#d4af37] font-mono">${i.invoiceNumber}</td><td class="p-4">${i.customer?.customerName||'Walk-in'}</td><td class="p-4 text-gray-400">${new Date(i.createdAt).toLocaleDateString()}</td><td class="p-4 text-[#64ffda]">${parseFloat(i.total||0).toFixed(2)} AED</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${i.paymentStatus==='paid'?'bg-green-500/20 text-green-400':'bg-yellow-500/20 text-yellow-400'}">${i.paymentStatus}</span></td></tr>`).join('')
-        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No invoices</td></tr>';
-}
+// Branches
+async function loadBr(){try{const r=await api('/branches');S.branches=r.data||r||[];}catch{}renderBrTbl();populateBranchDD();}
+function renderBrTbl(){$('br-tb').innerHTML=S.branches.length?S.branches.map(b=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${b.code}</td><td style="font-weight:600">${b.name}</td><td>${b.city||'-'}</td><td>${b.phone||'-'}</td><td style="color:var(--muted)">${b.email||'-'}</td><td><span class="badge ${b.status==='active'?'badge-success':'badge-danger'}">${b.status||'active'}</span></td><td><button onclick="editBr('${b.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No branches</td></tr>';}
+function populateBranchDD(){const dd=$('um-branch');if(!dd)return;dd.innerHTML='<option value="">Select...</option>'+S.branches.map(b=>`<option value="${b.id}">${b.name}</option>`).join('');}
 
-function renderUsers(users) {
-    document.getElementById('users-table').innerHTML = users.length 
-        ? users.map(u => `<tr class="hover:bg-white/5"><td class="p-4">${u.username}</td><td class="p-4">${u.fullName}</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] bg-[#d4af37]/20 text-[#d4af37]">${u.role.replace('_',' ')}</span></td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${u.status==='active'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${u.status}</span></td></tr>`).join('')
-        : '<tr><td colspan="4" class="p-8 text-center text-gray-500">No users</td></tr>';
-}
+function editBr(id){const b=S.branches.find(x=>x.id===id);if(!b)return;$('bm-id').value=id;$('bm-code').value=b.code||'';$('bm-name').value=b.name||'';$('bm-city').value=b.city||'';$('bm-emirate').value=b.emirate||'';$('bm-phone').value=b.phone||'';$('bm-email').value=b.email||'';$('bm-addr').value=b.address||'';showM('bm');}
+async function saveBr(){const id=$('bm-id').value;const b={code:$('bm-code').value,name:$('bm-name').value,city:$('bm-city').value,emirate:$('bm-emirate').value,phone:$('bm-phone').value,email:$('bm-email').value,address:$('bm-addr').value};if(!b.name||!b.code){toast('Name and Code required','error');return;}try{if(id)await api('/branches/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/branches',{method:'POST',body:JSON.stringify(b)});hideM('bm');$('bm-id').value='';toast('Branch saved!','success');await loadBr();}catch(e){toast(e.message,'error');}}
 
-function renderBranches(branches) {
-    document.getElementById('branches-table').innerHTML = branches.length 
-        ? branches.map(b => `<tr class="hover:bg-white/5"><td class="p-4 text-[#d4af37]">${b.code}</td><td class="p-4">${b.name}</td><td class="p-4 text-gray-400">${b.city}</td><td class="p-4 text-gray-400">${b.phone||'-'}</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${b.status==='active'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${b.status}</span></td></tr>`).join('')
-        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No branches</td></tr>';
-}
+// HR
+async function loadHR(){try{const r=await api('/attendance');const d=r.data||r||[];$('hr-tb').innerHTML=d.length?d.map(a=>`<tr><td style="font-weight:600">${a.user?.username||a.username||'-'}</td><td>${a.date?new Date(a.date).toLocaleDateString():'-'}</td><td style="color:var(--success)">${a.checkInTime||a.check_in_time?new Date(a.checkInTime||a.check_in_time).toLocaleTimeString():'-'}</td><td style="color:var(--danger)">${a.checkOutTime||a.check_out_time?new Date(a.checkOutTime||a.check_out_time).toLocaleTimeString():'-'}</td><td style="font-family:var(--mono)">${a.hoursWorked||a.hours_worked||'-'}</td><td><span class="badge ${a.status==='present'?'badge-success':a.status==='late'?'badge-info':'badge-danger'}">${a.status||'-'}</span></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">No attendance records</td></tr>';}catch{$('hr-tb').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">Unable to load attendance</td></tr>';}}
 
-// ============================================
-// NAVIGATION
-// ============================================
-function showTab(id) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-    document.getElementById('tab-' + id).classList.remove('hidden');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab'));
-    document.getElementById('btn-' + id)?.classList.add('active-tab');
-}
+async function doCheckIn(){showL('Checking in...');try{await api('/attendance/checkin',{method:'POST',body:JSON.stringify({})});toast('Checked in!','success');loadHR();}catch(e){toast(e.message,'error');}hideL();}
+async function doCheckOut(){showL('Checking out...');try{await api('/attendance/checkout',{method:'POST',body:JSON.stringify({})});toast('Checked out!','success');loadHR();}catch(e){toast(e.message,'error');}hideL();}
 
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+// Reports
+function genRpt(type){const now=new Date();let from,to=new Date();
+if(type==='yesterday'){from=new Date(now);from.setDate(from.getDate()-1);to=new Date(from);}
+else if(type==='week'){from=new Date(now);from.setDate(from.getDate()-7);}
+else if(type==='month'){from=new Date(now);from.setMonth(from.getMonth()-1);}
+else{from=new Date($('rpt-from').value);to=new Date($('rpt-to').value);if(isNaN(from)){toast('Select date range','error');return;}}
+const filtered=S.invoices.filter(i=>{const d=new Date(i.createdAt||i.created_at||i.date||0);return d>=from&&d<=to;});
+const rev=filtered.reduce((s,i)=>s+parseFloat(i.total||0),0);
+const vat=filtered.reduce((s,i)=>s+parseFloat(i.vatAmount||i.vat_amount||0),0);
+const methods={};filtered.forEach(i=>{const m=i.paymentMethod||i.payment_method||'other';methods[m]=(methods[m]||0)+1;});
+$('rpt-out').innerHTML=`<div class="fade-in"><h3 style="font-size:1.1rem;font-weight:700;margin-bottom:20px">📊 Report: ${from.toLocaleDateString()} - ${to.toLocaleDateString()}</h3>
+<div class="grid-4" style="margin-bottom:24px">
+<div class="stat-card"><p class="sl">Total Revenue</p><p class="sv" style="color:var(--gold)">${rev.toFixed(2)}</p></div>
+<div class="stat-card"><p class="sl">Total Invoices</p><p class="sv" style="color:var(--mint)">${filtered.length}</p></div>
+<div class="stat-card"><p class="sl">VAT Collected</p><p class="sv" style="color:var(--info)">${vat.toFixed(2)}</p></div>
+<div class="stat-card"><p class="sl">Avg per Invoice</p><p class="sv" style="color:var(--txt)">${filtered.length?(rev/filtered.length).toFixed(2):'0.00'}</p></div>
+</div>
+<h4 style="font-size:.9rem;font-weight:700;margin-bottom:12px">Payment Methods</h4>
+<div style="display:flex;gap:12px;flex-wrap:wrap">${Object.entries(methods).map(([m,c])=>`<div class="glass" style="padding:12px 20px"><p style="font-size:.7rem;color:var(--muted);text-transform:uppercase">${m}</p><p style="font-size:1.2rem;font-weight:700">${c}</p></div>`).join('')}</div></div>`;}
 
-// ============================================
-// INIT
-// ============================================
-document.addEventListener('DOMContentLoaded', async () => {
-    checkAPI();
-    
-    // Auto-login if token exists
-    if (state.token) {
-        try {
-            const me = await api('/auth/me');
-            state.user = me.data;
-            initApp();
-        } catch {
-            localStorage.removeItem('gserp_token');
-            state.token = null;
-        }
-    }
-    
-    // Enter key login
-    document.getElementById('login-pass').addEventListener('keypress', e => {
-        if (e.key === 'Enter') attemptLogin();
-    });
-});
+function exportRpt(fmt){const rows=[['Invoice','Customer','Date','Amount','Payment','Status']];S.invoices.forEach(i=>{rows.push([i.invoiceNumber||i.id,i.customer?.customerName||i.customerName||'-',fmtDate(i.createdAt||i.date),i.total,i.paymentMethod||'-',i.paymentStatus||i.status||'paid']);});
+const csv=rows.map(r=>r.join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-report-'+Date.now()+'.csv';a.click();toast('Report exported!','success');}
+
+// Settings
+function loadSets(){$('s-company').value=S.sets.company||'Government Services';$('s-vat').value=S.sets.vat||5;$('s-cur').value=S.sets.currency||'AED';
+$('sys-stats').innerHTML=`<div class="stat-card"><p class="sl">Total Invoices</p><p class="sv" style="color:var(--gold)">${S.invoices.length}</p></div><div class="stat-card"><p class="sl">Total Revenue</p><p class="sv" style="color:var(--mint)">${S.invoices.reduce((s,i)=>s+parseFloat(i.total||0),0).toFixed(2)}</p></div>`;}
+function saveSets(){S.sets.company=$('s-company').value;S.sets.vat=parseFloat($('s-vat').value)||5;S.sets.currency=$('s-cur').value;localStorage.setItem('gserp_s',JSON.stringify(S.sets));toast('Settings saved!','success');}
+function exportAll(){const d={invoices:S.invoices,customers:S.customers,users:S.users,branches:S.branches,services:S.services,exportDate:new Date().toISOString()};const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-export-'+Date.now()+'.json';a.click();toast('Data exported!','success');}
+
+// Keyboard
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));}if(e.key==='Enter'&&$('login-screen').style.display!=='none')doLogin();});
+
+// Startup
+document.addEventListener('DOMContentLoaded',async()=>{
+setTheme(S.theme);
+if(S.token){showL('Authenticating...');try{const me=await api('/auth/me');S.user=me.data||me.user||me;initApp();}catch{localStorage.removeItem('gserp_t');S.token=null;}hideL();}
+$('login-pass')?.addEventListener('keypress',e=>{if(e.key==='Enter')doLogin();});});
 </script>
 </body>
 </html>
