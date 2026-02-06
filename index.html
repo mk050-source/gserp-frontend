@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSERP | Government Services Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --gov-navy: #0a192f; --gov-gold: #d4af37; --cyber-mint: #64ffda; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--gov-navy); color: #e6f1ff; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
+        .active-tab { border-left: 4px solid var(--gov-gold); background: rgba(212,175,55,0.1); color: var(--gov-gold); }
+        .pos-card { transition: all 0.2s; cursor: pointer; }
+        .pos-card:hover { transform: translateY(-5px); border-color: var(--gov-gold); background: rgba(255,255,255,0.08); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #233554; border-radius: 10px; }
+        .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--gov-gold); animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; z-index: 9999; animation: slideIn 0.3s ease; }
+        .toast.success { background: #10b981; color: white; }
+        .toast.error { background: #ef4444; color: white; }
+        .toast.info { background: #3b82f6; color: white; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @media print { body { background: white; color: black; } .no-print { display: none !important; } .glass { background: white; border: 1px solid #ddd; } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- LOADING OVERLAY -->
+    <div id="loading-overlay" class="fixed inset-0 z-[300] flex items-center justify-center bg-[#020c1b] hidden">
+        <div class="text-center"><div class="loading w-16 h-16 border-4 mx-auto mb-4"></div><p class="text-gray-400">Loading...</p></div>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#020c1b]">
+        <div class="glass w-full max-w-md p-10 rounded-3xl text-center shadow-2xl">
+            <div class="mb-8">
+                <div class="w-20 h-20 bg-gradient-to-tr from-[#d4af37] to-[#f1d592] rounded-2xl mx-auto flex items-center justify-center shadow-lg">
+                    <span class="text-3xl font-bold text-[#0a192f]">GS</span>
+                </div>
+                <h1 class="mt-6 text-2xl font-bold tracking-widest text-white">GSERP PORTAL</h1>
+                <p class="text-gray-400 text-sm mt-2">Government Enterprise Resource Planning</p>
+            </div>
+            <div class="space-y-5 text-left">
+                <div>
+                    <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Username</label>
+                    <input id="login-user" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 mt-1 focus:border-[#d4af37] outline-none" placeholder="Username" value="superadmin">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Password</label>
+                    <input id="login-pass" type="password" class="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 mt-1 focus:border-[#d4af37] outline-none" placeholder="••••••••" value="Admin@123456">
+                </div>
+                <button onclick="attemptLogin()" id="login-btn" class="w-full bg-[#d4af37] hover:bg-[#b8962d] text-[#0a192f] font-bold py-4 rounded-xl transition-all shadow-lg mt-4 uppercase tracking-widest">
+                    Authorize Entry
+                </button>
+            </div>
+            <p id="error-msg" class="text-red-400 text-xs mt-6 hidden">Login failed. Check credentials.</p>
+            <div class="mt-6 text-xs text-gray-500">
+                <p>Demo: superadmin / Admin@123456</p>
+                <p>Cashier: cashier1 / User@12345</p>
+            </div>
+            <div id="api-status" class="mt-4 text-xs"><span class="text-gray-500">API: </span><span id="api-indicator" class="text-yellow-400">Checking...</span></div>
+        </div>
+    </div>
+
+    <!-- CUSTOMER MODAL -->
+    <div id="customer-modal" class="modal">
+        <div class="glass w-full max-w-lg p-8 rounded-3xl m-4">
+            <h3 class="text-2xl font-bold mb-6">Customer Information</h3>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="text-xs text-gray-400 uppercase">Select Existing Customer</label>
+                    <select id="customer-select" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none">
+                        <option value="">-- Select or Add New --</option>
+                    </select>
+                </div>
+                <div class="text-center text-xs text-gray-500">— OR ADD NEW —</div>
+                <div>
+                    <label class="text-xs text-gray-400 uppercase">Customer Name *</label>
+                    <input id="customer-name" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none" placeholder="Enter customer name">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 uppercase">Phone Number</label>
+                    <input id="customer-phone" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none" placeholder="+971 XX XXX XXXX">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 uppercase">Email</label>
+                    <input id="customer-email" type="email" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none" placeholder="customer@example.com">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 uppercase">Payment Method</label>
+                    <select id="payment-method" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 mt-1 focus:border-[#d4af37] outline-none">
+                        <option value="cash">Cash</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="bank">Bank Transfer</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeModal('customer-modal')" class="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold transition">Cancel</button>
+                <button onclick="createInvoice()" class="flex-1 bg-[#d4af37] hover:bg-[#b8962d] text-[#0a192f] py-3 rounded-xl font-bold transition">Generate Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVOICE MODAL -->
+    <div id="invoice-modal" class="modal">
+        <div class="bg-white text-black w-full max-w-3xl p-8 rounded-3xl m-4 max-h-[90vh] overflow-y-auto">
+            <div id="invoice-content"></div>
+            <div class="flex gap-3 mt-6 no-print">
+                <button onclick="closeModal('invoice-modal')" class="flex-1 bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold transition text-black">Close</button>
+                <button onclick="window.print()" class="flex-1 bg-[#d4af37] hover:bg-[#b8962d] text-[#0a192f] py-3 rounded-xl font-bold transition">Print</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app-container" class="hidden h-screen flex flex-col">
+        <!-- HEADER -->
+        <header class="glass h-20 px-8 flex items-center justify-between border-b border-white/5 shrink-0 no-print">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#d4af37] rounded-lg flex items-center justify-center font-bold text-[#0a192f]">GS</div>
+                    <span class="font-bold text-xl tracking-tighter">GSERP <span class="text-[#d4af37] font-light">PRO</span></span>
+                </div>
+                <div class="h-8 w-[1px] bg-white/10"></div>
+                <div>
+                    <p id="live-clock" class="text-lg font-medium tabular-nums">00:00:00</p>
+                    <p id="live-date" class="text-[10px] text-gray-400 uppercase tracking-widest">Loading...</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><span class="text-xs text-gray-400">Online</span></div>
+                <div class="text-right">
+                    <p id="current-username" class="font-semibold text-white">--</p>
+                    <p id="user-role" class="text-[10px] text-[#64ffda] uppercase font-bold">--</p>
+                </div>
+                <button onclick="logout()" class="p-3 hover:bg-red-500/10 rounded-xl transition text-red-400">Logout</button>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- SIDEBAR -->
+            <nav class="w-64 glass border-r border-white/5 flex flex-col p-4 shrink-0 no-print">
+                <div class="space-y-1 flex-1">
+                    <button onclick="showTab('dashboard')" id="btn-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 active-tab text-sm">📊 Dashboard</button>
+                    <button onclick="showTab('pos')" id="btn-pos" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">💳 POS Terminal</button>
+                    <button onclick="showTab('invoices')" id="btn-invoices" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">📄 Invoices</button>
+                    <button onclick="showTab('customers')" id="btn-customers" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">👥 Customers</button>
+                    <button onclick="showTab('services')" id="btn-services" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">🏛️ Services</button>
+                    <button onclick="showTab('users')" id="btn-users" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">👤 Users</button>
+                    <button onclick="showTab('branches')" id="btn-branches" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-sm">🏢 Branches</button>
+                </div>
+                <div class="glass p-3 rounded-xl bg-green-500/5 text-xs">
+                    <p class="text-green-400 font-bold mb-1">System Status</p>
+                    <p class="text-gray-400">API Connected ✅</p>
+                </div>
+            </nav>
+
+            <!-- MAIN CONTENT -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- DASHBOARD -->
+                <div id="tab-dashboard" class="tab-content">
+                    <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="glass p-5 rounded-2xl">
+                            <p class="text-xs text-gray-400 uppercase mb-1">Today's Revenue</p>
+                            <p id="stat-revenue" class="text-2xl font-bold text-[#d4af37]">0 AED</p>
+                        </div>
+                        <div class="glass p-5 rounded-2xl">
+                            <p class="text-xs text-gray-400 uppercase mb-1">Invoices Today</p>
+                            <p id="stat-invoices" class="text-2xl font-bold text-[#64ffda]">0</p>
+                        </div>
+                        <div class="glass p-5 rounded-2xl">
+                            <p class="text-xs text-gray-400 uppercase mb-1">Total Customers</p>
+                            <p id="stat-customers" class="text-2xl font-bold text-white">0</p>
+                        </div>
+                        <div class="glass p-5 rounded-2xl">
+                            <p class="text-xs text-gray-400 uppercase mb-1">Active Services</p>
+                            <p id="stat-services" class="text-2xl font-bold text-white">0</p>
+                        </div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl">
+                        <h3 class="font-bold mb-4">Recent Invoices</h3>
+                        <div id="recent-invoices" class="space-y-2"><p class="text-gray-500 text-sm">Loading...</p></div>
+                    </div>
+                </div>
+
+                <!-- POS -->
+                <div id="tab-pos" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <h2 class="text-2xl font-bold mb-4">POS Terminal</h2>
+                            <div class="mb-4 flex gap-3">
+                                <select id="center-filter" onchange="filterServices()" class="bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm">
+                                    <option value="all">All Centers</option>
+                                    <option value="Abu Dhabi">Abu Dhabi</option>
+                                    <option value="Dubai">Dubai</option>
+                                    <option value="Sharjah">Sharjah</option>
+                                    <option value="Ajman">Ajman</option>
+                                </select>
+                                <input id="search-service" type="text" placeholder="Search services..." oninput="filterServices()" class="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm">
+                            </div>
+                            <div id="pos-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"><p class="text-gray-500 col-span-3 text-center py-8">Loading services...</p></div>
+                        </div>
+                        <div class="glass rounded-2xl p-5 h-fit sticky top-0">
+                            <h3 class="font-bold mb-4">Cart</h3>
+                            <div id="cart-items" class="space-y-2 mb-4 max-h-[300px] overflow-y-auto border-b border-white/10 pb-4">
+                                <p class="text-gray-500 text-xs text-center py-4">Empty cart</p>
+                            </div>
+                            <div class="space-y-2 text-sm mb-4">
+                                <div class="flex justify-between text-gray-400"><span>Subtotal</span><span id="subtotal">0.00 AED</span></div>
+                                <div class="flex justify-between text-gray-400"><span>VAT (5%)</span><span id="vat">0.00 AED</span></div>
+                                <div class="flex justify-between text-lg font-bold border-t border-white/10 pt-2"><span>Total</span><span id="total" class="text-[#64ffda]">0.00 AED</span></div>
+                            </div>
+                            <button onclick="clearCart()" class="w-full bg-red-500/10 text-red-400 py-2 rounded-xl mb-2 text-sm font-bold hover:bg-red-500/20">Clear</button>
+                            <button onclick="processPayment()" class="w-full bg-[#d4af37] text-[#0a192f] py-3 rounded-xl font-bold hover:bg-[#b8962d]">Process Payment</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INVOICES -->
+                <div id="tab-invoices" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold mb-4">Invoices</h2>
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
+                                <tr><th class="p-4 text-left">Invoice #</th><th class="p-4 text-left">Customer</th><th class="p-4 text-left">Date</th><th class="p-4 text-left">Amount</th><th class="p-4 text-left">Status</th></tr>
+                            </thead>
+                            <tbody id="invoices-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CUSTOMERS -->
+                <div id="tab-customers" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold mb-4">Customers</h2>
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
+                                <tr><th class="p-4 text-left">Code</th><th class="p-4 text-left">Name</th><th class="p-4 text-left">Type</th><th class="p-4 text-left">Phone</th><th class="p-4 text-left">Status</th></tr>
+                            </thead>
+                            <tbody id="customers-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SERVICES -->
+                <div id="tab-services" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold mb-4">Services Catalog</h2>
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
+                                <tr><th class="p-4 text-left">Code</th><th class="p-4 text-left">Name</th><th class="p-4 text-left">Category</th><th class="p-4 text-left">Center</th><th class="p-4 text-left">Price</th></tr>
+                            </thead>
+                            <tbody id="services-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- USERS -->
+                <div id="tab-users" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold mb-4">Users</h2>
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
+                                <tr><th class="p-4 text-left">Username</th><th class="p-4 text-left">Full Name</th><th class="p-4 text-left">Role</th><th class="p-4 text-left">Status</th></tr>
+                            </thead>
+                            <tbody id="users-table" class="divide-y divide-white/5"><tr><td colspan="4" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BRANCHES -->
+                <div id="tab-branches" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold mb-4">Branches</h2>
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/5 text-[10px] text-gray-400 uppercase">
+                                <tr><th class="p-4 text-left">Code</th><th class="p-4 text-left">Name</th><th class="p-4 text-left">City</th><th class="p-4 text-left">Phone</th><th class="p-4 text-left">Status</th></tr>
+                            </thead>
+                            <tbody id="branches-table" class="divide-y divide-white/5"><tr><td colspan="5" class="p-8 text-center text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+<script>
+// ============================================
+// CONFIGURATION
+// ============================================
+const API_URL = 'https://gserp-backend.onrender.com/api';
+
+// ============================================
+// STATE
+// ============================================
+let state = {
+    user: null,
+    token: localStorage.getItem('gserp_token'),
+    services: [],
+    customers: [],
+    invoices: [],
+    cart: []
+};
+
+// ============================================
+// API HELPERS
+// ============================================
+async function api(endpoint, method = 'GET', body = null) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+    
+    const options = { method, headers };
+    if (body) options.body = JSON.stringify(body);
+    
+    const res = await fetch(`${API_URL}${endpoint}`, options);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'API Error');
+    return data;
+}
+
+function toast(msg, type = 'info') {
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+function showLoading() { document.getElementById('loading-overlay').classList.remove('hidden'); }
+function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+
+// ============================================
+// AUTH
+// ============================================
+async function checkAPI() {
+    try {
+        await api('/health');
+        document.getElementById('api-indicator').textContent = '✅ Connected';
+        document.getElementById('api-indicator').className = 'text-green-400';
+    } catch {
+        document.getElementById('api-indicator').textContent = '❌ Offline';
+        document.getElementById('api-indicator').className = 'text-red-400';
+    }
+}
+
+async function attemptLogin() {
+    const username = document.getElementById('login-user').value;
+    const password = document.getElementById('login-pass').value;
+    
+    if (!username || !password) { toast('Enter credentials', 'error'); return; }
+    
+    const btn = document.getElementById('login-btn');
+    btn.innerHTML = '<span class="loading"></span>';
+    btn.disabled = true;
+    
+    try {
+        const data = await api('/auth/login', 'POST', { username, password });
+        state.token = data.data.accessToken;
+        state.user = data.data.user;
+        localStorage.setItem('gserp_token', state.token);
+        toast('Login successful!', 'success');
+        initApp();
+    } catch (e) {
+        document.getElementById('error-msg').classList.remove('hidden');
+        toast(e.message, 'error');
+    } finally {
+        btn.innerHTML = 'Authorize Entry';
+        btn.disabled = false;
+    }
+}
+
+function logout() {
+    if (confirm('Logout?')) {
+        localStorage.removeItem('gserp_token');
+        location.reload();
+    }
+}
+
+// ============================================
+// INIT APP
+// ============================================
+async function initApp() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-container').classList.remove('hidden');
+    
+    document.getElementById('current-username').textContent = state.user.fullName || state.user.username;
+    document.getElementById('user-role').textContent = state.user.role.replace('_', ' ').toUpperCase();
+    
+    const isAdmin = ['super_admin', 'admin', 'supervisor'].includes(state.user.role);
+    document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', !isAdmin));
+    
+    // Clock
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('live-clock').textContent = now.toLocaleTimeString();
+        document.getElementById('live-date').textContent = now.toDateString().toUpperCase();
+    }, 1000);
+    
+    // Load data
+    await loadAll();
+}
+
+async function loadAll() {
+    showLoading();
+    try {
+        const [services, customers, invoices] = await Promise.all([
+            api('/services'),
+            api('/customers'),
+            api('/invoices')
+        ]);
+        state.services = services.data || [];
+        state.customers = customers.data || [];
+        state.invoices = invoices.data || [];
+        
+        renderPOS();
+        renderTables();
+        updateDashboard();
+        populateCustomerSelect();
+        
+        if (['super_admin', 'admin'].includes(state.user.role)) {
+            const [users, branches] = await Promise.all([api('/users'), api('/branches')]);
+            renderUsers(users.data || []);
+            renderBranches(branches.data || []);
+        }
+    } catch (e) {
+        toast('Failed to load data: ' + e.message, 'error');
+    }
+    hideLoading();
+}
+
+// ============================================
+// DASHBOARD
+// ============================================
+function updateDashboard() {
+    const today = new Date().toLocaleDateString();
+    const todayInvoices = state.invoices.filter(i => new Date(i.createdAt).toLocaleDateString() === today);
+    const revenue = todayInvoices.reduce((s, i) => s + parseFloat(i.total || 0), 0);
+    
+    document.getElementById('stat-revenue').textContent = revenue.toFixed(2) + ' AED';
+    document.getElementById('stat-invoices').textContent = todayInvoices.length;
+    document.getElementById('stat-customers').textContent = state.customers.length;
+    document.getElementById('stat-services').textContent = state.services.filter(s => s.status === 'active').length;
+    
+    const recent = state.invoices.slice(0, 5);
+    document.getElementById('recent-invoices').innerHTML = recent.length 
+        ? recent.map(i => `<div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+            <div><p class="font-semibold text-sm">${i.invoiceNumber}</p><p class="text-xs text-gray-400">${i.customer?.customerName || 'Walk-in'}</p></div>
+            <p class="text-[#64ffda] font-bold">${parseFloat(i.total||0).toFixed(2)} AED</p></div>`).join('')
+        : '<p class="text-gray-500 text-sm text-center">No invoices yet</p>';
+}
+
+// ============================================
+// POS
+// ============================================
+function renderPOS() {
+    const grid = document.getElementById('pos-grid');
+    const center = document.getElementById('center-filter').value;
+    const search = document.getElementById('search-service').value.toLowerCase();
+    
+    let filtered = state.services.filter(s => s.status === 'active');
+    if (center !== 'all') filtered = filtered.filter(s => s.center === center);
+    if (search) filtered = filtered.filter(s => s.name.toLowerCase().includes(search) || s.itemCode.toLowerCase().includes(search));
+    
+    if (!filtered.length) {
+        grid.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">No services found</p>';
+        return;
+    }
+    
+    // Group by category
+    const grouped = {};
+    filtered.forEach(s => { if (!grouped[s.category]) grouped[s.category] = []; grouped[s.category].push(s); });
+    
+    let html = '';
+    for (const cat in grouped) {
+        html += `<div class="col-span-3 mt-4 first:mt-0"><p class="text-xs text-gray-400 uppercase font-bold mb-2">${cat}</p></div>`;
+        grouped[cat].forEach(s => {
+            html += `<div onclick="addToCart('${s.id}')" class="glass p-4 rounded-xl pos-card border border-white/5 text-center">
+                <span class="text-2xl block mb-1">${s.icon || '📋'}</span>
+                <p class="text-xs font-bold">${s.name}</p>
+                <p class="text-[10px] text-[#64ffda] mt-1">${parseFloat(s.basePrice).toFixed(2)} AED</p>
+            </div>`;
+        });
+    }
+    grid.innerHTML = html;
+}
+
+function filterServices() { renderPOS(); }
+
+function addToCart(id) {
+    const service = state.services.find(s => s.id === id);
+    if (service) {
+        state.cart.push({ ...service, cartId: Date.now() });
+        updateCart();
+        toast(`Added: ${service.name}`, 'success');
+    }
+}
+
+function removeFromCart(cartId) {
+    state.cart = state.cart.filter(i => i.cartId !== cartId);
+    updateCart();
+}
+
+function clearCart() {
+    if (state.cart.length && confirm('Clear cart?')) {
+        state.cart = [];
+        updateCart();
+    }
+}
+
+function updateCart() {
+    const container = document.getElementById('cart-items');
+    if (!state.cart.length) {
+        container.innerHTML = '<p class="text-gray-500 text-xs text-center py-4">Empty cart</p>';
+        document.getElementById('subtotal').textContent = '0.00 AED';
+        document.getElementById('vat').textContent = '0.00 AED';
+        document.getElementById('total').textContent = '0.00 AED';
+        return;
+    }
+    
+    container.innerHTML = state.cart.map(i => `<div class="flex justify-between items-center py-2 border-b border-white/5">
+        <div><p class="text-xs font-semibold">${i.name}</p><p class="text-[10px] text-gray-400">${i.itemCode}</p></div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-[#64ffda]">${parseFloat(i.basePrice).toFixed(2)}</span>
+            <button onclick="removeFromCart(${i.cartId})" class="text-red-400 text-xs">✕</button>
+        </div>
+    </div>`).join('');
+    
+    const subtotal = state.cart.reduce((s, i) => s + parseFloat(i.basePrice), 0);
+    const vat = subtotal * 0.05;
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' AED';
+    document.getElementById('vat').textContent = vat.toFixed(2) + ' AED';
+    document.getElementById('total').textContent = (subtotal + vat).toFixed(2) + ' AED';
+}
+
+function processPayment() {
+    if (!state.cart.length) { toast('Cart is empty', 'error'); return; }
+    populateCustomerSelect();
+    document.getElementById('customer-modal').classList.add('active');
+}
+
+function populateCustomerSelect() {
+    const select = document.getElementById('customer-select');
+    select.innerHTML = '<option value="">-- Select or Add New --</option>' + 
+        state.customers.map(c => `<option value="${c.id}">${c.customerName} (${c.customerCode})</option>`).join('');
+}
+
+async function createInvoice() {
+    const customerId = document.getElementById('customer-select').value;
+    const customerName = document.getElementById('customer-name').value;
+    const phone = document.getElementById('customer-phone').value;
+    const email = document.getElementById('customer-email').value;
+    const paymentMethod = document.getElementById('payment-method').value;
+    
+    if (!customerId && !customerName) { toast('Select or enter customer', 'error'); return; }
+    
+    showLoading();
+    try {
+        let finalCustomerId = customerId;
+        
+        // Create new customer if needed
+        if (!customerId && customerName) {
+            const newCustomer = await api('/customers', 'POST', {
+                customerName,
+                customerType: 'individual',
+                mobile: phone,
+                email
+            });
+            finalCustomerId = newCustomer.data.id;
+            state.customers.push(newCustomer.data);
+        }
+        
+        // Create invoice
+        const items = state.cart.map(i => ({
+            serviceId: i.id,
+            quantity: 1,
+            unitPrice: parseFloat(i.basePrice)
+        }));
+        
+        const invoice = await api('/invoices', 'POST', {
+            customerId: finalCustomerId,
+            paymentMethod,
+            items
+        });
+        
+        state.invoices.unshift(invoice.data);
+        state.cart = [];
+        updateCart();
+        closeModal('customer-modal');
+        renderTables();
+        updateDashboard();
+        
+        // Show invoice
+        showInvoice(invoice.data);
+        toast('Invoice created!', 'success');
+    } catch (e) {
+        toast('Failed: ' + e.message, 'error');
+    }
+    hideLoading();
+}
+
+function showInvoice(inv) {
+    const items = inv.invoiceItems || [];
+    document.getElementById('invoice-content').innerHTML = `
+        <div class="border-b-2 pb-4 mb-4">
+            <div class="flex justify-between">
+                <div><h1 class="text-2xl font-bold text-[#0a192f]">GOVERNMENT SERVICES</h1><p class="text-sm text-gray-600">UAE</p></div>
+                <div class="text-right"><div class="w-12 h-12 bg-[#d4af37] rounded-lg flex items-center justify-center"><span class="text-lg font-bold text-white">GS</span></div></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+            <div><p class="text-gray-500">Invoice #</p><p class="font-bold">${inv.invoiceNumber}</p></div>
+            <div><p class="text-gray-500">Date</p><p>${new Date(inv.createdAt).toLocaleString()}</p></div>
+            <div><p class="text-gray-500">Customer</p><p class="font-semibold">${inv.customer?.customerName || 'Walk-in'}</p></div>
+            <div><p class="text-gray-500">Payment</p><p>${inv.paymentMethod?.toUpperCase()}</p></div>
+        </div>
+        <table class="w-full mb-4 text-sm">
+            <thead class="bg-gray-100"><tr><th class="p-2 text-left">#</th><th class="p-2 text-left">Service</th><th class="p-2 text-right">Price</th></tr></thead>
+            <tbody>${items.map((item, idx) => `<tr class="border-t"><td class="p-2">${idx+1}</td><td class="p-2">${item.service?.name || item.name || 'Service'}</td><td class="p-2 text-right">${parseFloat(item.totalPrice || item.unitPrice).toFixed(2)} AED</td></tr>`).join('')}</tbody>
+        </table>
+        <div class="text-right text-sm">
+            <p>Subtotal: <strong>${parseFloat(inv.subtotal).toFixed(2)} AED</strong></p>
+            <p>VAT (5%): <strong>${parseFloat(inv.vatAmount).toFixed(2)} AED</strong></p>
+            <p class="text-lg mt-2">Total: <strong class="text-[#d4af37]">${parseFloat(inv.total).toFixed(2)} AED</strong></p>
+        </div>
+        <div class="text-center text-xs text-gray-500 mt-4 pt-4 border-t">Thank you for using Government Services</div>
+    `;
+    document.getElementById('invoice-modal').classList.add('active');
+}
+
+// ============================================
+// TABLES
+// ============================================
+function renderTables() {
+    // Services
+    document.getElementById('services-table').innerHTML = state.services.length 
+        ? state.services.map(s => `<tr class="hover:bg-white/5"><td class="p-4 text-[#d4af37]">${s.itemCode}</td><td class="p-4">${s.icon||''} ${s.name}</td><td class="p-4 text-gray-400">${s.category}</td><td class="p-4 text-gray-400">${s.center}</td><td class="p-4 text-[#64ffda]">${parseFloat(s.basePrice).toFixed(2)} AED</td></tr>`).join('')
+        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No services</td></tr>';
+    
+    // Customers
+    document.getElementById('customers-table').innerHTML = state.customers.length 
+        ? state.customers.map(c => `<tr class="hover:bg-white/5"><td class="p-4 text-[#d4af37]">${c.customerCode}</td><td class="p-4">${c.customerName}</td><td class="p-4 text-gray-400">${c.customerType}</td><td class="p-4 text-gray-400">${c.mobile||'-'}</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${c.status==='active'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${c.status}</span></td></tr>`).join('')
+        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No customers</td></tr>';
+    
+    // Invoices
+    document.getElementById('invoices-table').innerHTML = state.invoices.length 
+        ? state.invoices.map(i => `<tr class="hover:bg-white/5 cursor-pointer" onclick='showInvoice(${JSON.stringify(i).replace(/'/g,"\\'")})'><td class="p-4 text-[#d4af37] font-mono">${i.invoiceNumber}</td><td class="p-4">${i.customer?.customerName||'Walk-in'}</td><td class="p-4 text-gray-400">${new Date(i.createdAt).toLocaleDateString()}</td><td class="p-4 text-[#64ffda]">${parseFloat(i.total||0).toFixed(2)} AED</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${i.paymentStatus==='paid'?'bg-green-500/20 text-green-400':'bg-yellow-500/20 text-yellow-400'}">${i.paymentStatus}</span></td></tr>`).join('')
+        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No invoices</td></tr>';
+}
+
+function renderUsers(users) {
+    document.getElementById('users-table').innerHTML = users.length 
+        ? users.map(u => `<tr class="hover:bg-white/5"><td class="p-4">${u.username}</td><td class="p-4">${u.fullName}</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] bg-[#d4af37]/20 text-[#d4af37]">${u.role.replace('_',' ')}</span></td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${u.status==='active'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${u.status}</span></td></tr>`).join('')
+        : '<tr><td colspan="4" class="p-8 text-center text-gray-500">No users</td></tr>';
+}
+
+function renderBranches(branches) {
+    document.getElementById('branches-table').innerHTML = branches.length 
+        ? branches.map(b => `<tr class="hover:bg-white/5"><td class="p-4 text-[#d4af37]">${b.code}</td><td class="p-4">${b.name}</td><td class="p-4 text-gray-400">${b.city}</td><td class="p-4 text-gray-400">${b.phone||'-'}</td><td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${b.status==='active'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${b.status}</span></td></tr>`).join('')
+        : '<tr><td colspan="5" class="p-8 text-center text-gray-500">No branches</td></tr>';
+}
+
+// ============================================
+// NAVIGATION
+// ============================================
+function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+    document.getElementById('tab-' + id).classList.remove('hidden');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab'));
+    document.getElementById('btn-' + id)?.classList.add('active-tab');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// ============================================
+// INIT
+// ============================================
+document.addEventListener('DOMContentLoaded', async () => {
+    checkAPI();
+    
+    // Auto-login if token exists
+    if (state.token) {
+        try {
+            const me = await api('/auth/me');
+            state.user = me.data;
+            initApp();
+        } catch {
+            localStorage.removeItem('gserp_token');
+            state.token = null;
+        }
+    }
+    
+    // Enter key login
+    document.getElementById('login-pass').addEventListener('keypress', e => {
+        if (e.key === 'Enter') attemptLogin();
+    });
+});
+</script>
+</body>
+</html>
