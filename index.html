@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>GSERP | Government Services ERP</title>
 <meta name="theme-color" content="#0a192f">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='8' fill='%23d4af37'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dy='.35em' font-family='Arial' font-size='16' font-weight='800' fill='%230a192f'%3EGS%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#0a192f;--navy-lt:#112240;--navy-lr:#1d3557;--gold:#d4af37;--gold-dk:#b8962d;--mint:#64ffda;--txt:#e6f1ff;--muted:#8892b0;--dim:#495670;--danger:#ef4444;--success:#22c55e;--warn:#f59e0b;--info:#3b82f6;--gbg:rgba(255,255,255,0.03);--gbr:rgba(255,255,255,0.08);--rad:16px;--radsm:10px;--font:'DM Sans','Noto Sans Arabic',sans-serif;--mono:'JetBrains Mono',monospace}
@@ -14,30 +15,35 @@
 html{font-size:14px}
 body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hidden;height:100vh;transition:background .3s,color .3s}
 [dir=rtl]{direction:rtl;text-align:right}
+[dir=rtl] .sidebar-btn{text-align:right;border-left:none;border-right:4px solid transparent}
+[dir=rtl] .sidebar-btn.active-tab{border-left:none;border-right-color:var(--gold)}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--navy-lr);border-radius:10px}
 .glass{background:var(--gbg);backdrop-filter:blur(12px);border:1px solid var(--gbr);border-radius:var(--rad)}
 .btn{padding:10px 20px;border-radius:var(--radsm);font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:8px;font-family:var(--font)}
 .btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-dk);transform:translateY(-1px)}
 .btn-mint{background:var(--mint);color:var(--navy)}.btn-ghost{background:rgba(255,255,255,.05);color:var(--txt);border:1px solid var(--gbr)}.btn-ghost:hover{background:rgba(255,255,255,.1)}
-.btn-danger{background:rgba(239,68,68,.1);color:var(--danger)}.btn-sm{padding:6px 14px;font-size:.75rem}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.2)}.btn-danger:hover{background:rgba(239,68,68,.2)}
+.btn-sm{padding:6px 14px;font-size:.75rem}
 .input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--gbr);border-radius:var(--radsm);padding:12px 16px;color:var(--txt);font-size:.9rem;font-family:var(--font);transition:border-color .2s;outline:none}
 .input:focus{border-color:var(--gold)}.input::placeholder{color:var(--dim)}select.input{appearance:none;cursor:pointer}
+.input:disabled{opacity:.5;cursor:not-allowed}
 .label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;font-weight:600}
 .tbl{width:100%;text-align:left;border-collapse:collapse}.tbl thead{background:rgba(255,255,255,.03)}
 .tbl th{padding:14px 18px;font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-weight:700}
 .tbl td{padding:14px 18px;font-size:.85rem;border-top:1px solid var(--gbr)}.tbl tr:hover{background:rgba(255,255,255,.02)}
 .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .badge-gold{background:rgba(212,175,55,.15);color:var(--gold)}.badge-mint{background:rgba(100,255,218,.1);color:var(--mint)}
-.badge-danger{background:rgba(239,68,68,.1);color:var(--danger)}.badge-success{background:rgba(34,197,94,.1);color:var(--success)}.badge-info{background:rgba(59,130,246,.1);color:var(--info)}
+.badge-danger{background:rgba(239,68,68,.1);color:var(--danger)}.badge-success{background:rgba(34,197,94,.1);color:var(--success)}.badge-info{background:rgba(59,130,246,.1);color:var(--info)}.badge-warn{background:rgba(245,158,11,.1);color:var(--warn)}
 .stat-card{background:var(--gbg);border:1px solid var(--gbr);border-radius:var(--rad);padding:20px 24px;transition:transform .2s}.stat-card:hover{transform:translateY(-2px)}
 .stat-card .sl{font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-weight:700}
 .stat-card .sv{font-size:1.8rem;font-weight:700;margin-top:8px;font-family:var(--mono)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
 .modal-overlay.active{display:flex}
 .modal-box{background:var(--navy-lt);border:1px solid var(--gbr);border-radius:var(--rad);padding:32px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;margin:16px}
+.modal-box.wide{max-width:800px}
 .modal-box h3{font-size:1.3rem;font-weight:700;margin-bottom:20px}
-.toast-c{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
-.toast{padding:14px 24px;border-radius:var(--radsm);font-size:.85rem;font-weight:500;animation:si .3s ease;min-width:280px}
+.toast-c{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:14px 24px;border-radius:var(--radsm);font-size:.85rem;font-weight:500;animation:si .3s ease;min-width:280px;pointer-events:auto}
 .toast-success{background:#065f46;color:#a7f3d0;border-left:4px solid var(--success)}
 .toast-error{background:#7f1d1d;color:#fca5a5;border-left:4px solid var(--danger)}
 .toast-info{background:#1e3a5f;color:#93c5fd;border-left:4px solid var(--info)}
@@ -55,16 +61,30 @@ body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hi
 .qty-ctrl button:hover{background:rgba(255,255,255,.1)}.qty-ctrl span{width:32px;text-align:center;font-size:.8rem;font-weight:600;font-family:var(--mono)}
 .sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.sync-dot.online{background:var(--success);animation:pu 2s infinite}.sync-dot.offline{background:var(--danger)}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.5}}
-.sidebar{width:240px;background:var(--gbg);border-right:1px solid var(--gbr);display:flex;flex-direction:column;padding:20px 12px;flex-shrink:0}
+.sidebar{width:240px;background:var(--gbg);border-right:1px solid var(--gbr);display:flex;flex-direction:column;padding:20px 12px;flex-shrink:0;overflow-y:auto}
+[dir=rtl] .sidebar{border-right:none;border-left:1px solid var(--gbr)}
 .sidebar-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:none;border-radius:var(--radsm);background:transparent;color:var(--muted);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--font);text-align:left;border-left:4px solid transparent}
 .sidebar-btn:hover{background:rgba(255,255,255,.04);color:var(--txt)}
 .sidebar-btn.active-tab{border-left-color:var(--gold);background:rgba(212,175,55,.08);color:var(--gold);font-weight:600}
 .tab-page{display:none;height:100%;overflow-y:auto;padding:28px}.tab-page.active{display:block}
-.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
 .page-title{font-size:1.5rem;font-weight:700}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.notif-bell{position:relative;cursor:pointer;font-size:1.3rem;padding:4px}
+.notif-badge{position:absolute;top:-4px;right:-6px;background:var(--danger);color:#fff;font-size:.55rem;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.notif-panel{position:absolute;top:40px;right:0;width:340px;background:var(--navy-lt);border:1px solid var(--gbr);border-radius:var(--rad);z-index:500;max-height:400px;overflow-y:auto;display:none;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.notif-panel.show{display:block}
+.notif-item{padding:14px 16px;border-bottom:1px solid var(--gbr);cursor:pointer;transition:background .15s}
+.notif-item:hover{background:rgba(255,255,255,.03)}
+.notif-item.unread{border-left:3px solid var(--gold)}
+.toggle-sw{position:relative;display:inline-block;width:44px;height:24px}
+.toggle-sw input{opacity:0;width:0;height:0}
+.toggle-sl{position:absolute;cursor:pointer;inset:0;background:var(--dim);border-radius:24px;transition:.3s}
+.toggle-sl:before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-sw input:checked+.toggle-sl{background:var(--gold)}
+.toggle-sw input:checked+.toggle-sl:before{transform:translateX(20px)}
 @media print{body{background:#fff!important;color:#000!important;overflow:visible!important}.no-print{display:none!important}.print-only{display:block!important}}.print-only{display:none}
 .invoice-print{background:#fff;color:#1a1a1a;padding:40px;font-family:'DM Sans',sans-serif}
 .invoice-print table{width:100%;border-collapse:collapse}.invoice-print th,.invoice-print td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:.85rem}
@@ -76,21 +96,20 @@ body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hi
 <body>
 <div class="toast-c" id="toasts"></div>
 <div id="loading-overlay"><div class="spinner"></div><p id="loading-text" style="color:var(--muted);font-size:.85rem">Loading...</p></div>
-
 <!-- LOGIN -->
 <div id="login-screen" style="display:flex;position:fixed;inset:0;z-index:500;align-items:center;justify-content:center;background:linear-gradient(135deg,#020c1b,#0a192f,#112240)">
 <div class="glass" style="width:100%;max-width:420px;padding:48px 40px;text-align:center;margin:16px">
 <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--gold),#f1d592);border-radius:16px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center"><span style="font-size:1.5rem;font-weight:800;color:#0a192f">GS</span></div>
-<h1 style="font-size:1.4rem;font-weight:700;letter-spacing:.1em;margin-bottom:4px">GSERP PORTAL</h1>
-<p style="color:var(--dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;margin-bottom:32px">Government Services ERP System</p>
+<h1 style="font-size:1.4rem;font-weight:700;letter-spacing:.1em;margin-bottom:4px" id="login-title">GSERP PORTAL</h1>
+<p style="color:var(--dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;margin-bottom:32px" id="login-sub">Government Services ERP System</p>
 <div style="text-align:left">
-<label class="label">Username</label><input id="login-user" type="text" class="input" placeholder="Enter your username" autocomplete="username" style="margin-bottom:16px">
-<label class="label">Password</label><input id="login-pass" type="password" class="input" placeholder="Enter your password" autocomplete="current-password" style="margin-bottom:8px">
-<div style="text-align:right;margin-bottom:24px"><a href="#" onclick="toast('Contact your administrator','info');return false" style="color:var(--gold);font-size:.75rem;text-decoration:none">Forgot password?</a></div>
-<button onclick="doLogin()" class="btn btn-gold" style="width:100%;padding:14px;font-size:.9rem;letter-spacing:.1em">SIGN IN</button>
+<label class="label" id="lbl-user">Username</label><input id="login-user" type="text" class="input" placeholder="Enter your username" autocomplete="username" style="margin-bottom:16px">
+<label class="label" id="lbl-pass">Password</label><input id="login-pass" type="password" class="input" placeholder="Enter your password" autocomplete="current-password" style="margin-bottom:8px">
+<div style="text-align:right;margin-bottom:24px"><a href="#" onclick="toast('Contact your administrator','info');return false" style="color:var(--gold);font-size:.75rem;text-decoration:none" id="lbl-forgot">Forgot password?</a></div>
+<button onclick="doLogin()" class="btn btn-gold" style="width:100%;padding:14px;font-size:.9rem;letter-spacing:.1em" id="lbl-signin">SIGN IN</button>
 </div>
 <p id="login-error" style="color:var(--danger);font-size:.75rem;margin-top:16px;display:none"></p>
-<p style="color:var(--dim);font-size:.65rem;margin-top:28px">GSERP v2.0 — Demo Application</p>
+<p style="color:var(--dim);font-size:.65rem;margin-top:28px">GSERP v2.3</p>
 <p style="color:var(--dim);font-size:.6rem;margin-top:4px">© 2026 Oglah Tech</p>
 </div></div>
 
@@ -99,7 +118,7 @@ body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hi
 <!-- HEADER -->
 <header class="no-print" style="height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:var(--gbg);border-bottom:1px solid var(--gbr);flex-shrink:0">
 <div style="display:flex;align-items:center;gap:20px">
-<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a192f;font-size:.9rem">GS</div><span style="font-weight:700;font-size:1.1rem">GSERP <span style="color:var(--gold);font-weight:300">PRO</span></span></div>
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a192f;font-size:.9rem">GS</div><span style="font-weight:700;font-size:1.1rem" id="hdr-company">GSERP <span style="color:var(--gold);font-weight:300">PRO</span></span></div>
 <div style="height:28px;width:1px;background:var(--gbr)"></div>
 <div><p id="hdr-clock" style="font-size:1rem;font-weight:500;font-family:var(--mono)"></p><p id="hdr-date" style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em"></p></div>
 </div>
@@ -107,157 +126,190 @@ body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hi
 <select id="theme-sel" onchange="setTheme(this.value)" class="input" style="width:auto;padding:6px 12px;font-size:.7rem"><option value="dark">🌙 Dark</option><option value="light">☀️ Light</option><option value="warm">🕯️ Warm</option></select>
 <button onclick="toggleLang()" class="btn btn-ghost btn-sm" id="lang-btn">🌐 EN</button>
 <div style="display:flex;align-items:center;gap:6px"><span id="sync-ind" class="sync-dot online"></span><span id="sync-txt" style="font-size:.7rem;color:var(--muted)">Online</span></div>
+<!-- NOTIFICATIONS -->
+<div style="position:relative" id="notif-wrap">
+<div class="notif-bell" onclick="toggleNotif()">🔔<span class="notif-badge" id="notif-count" style="display:none">0</span></div>
+<div class="notif-panel" id="notif-panel"><div style="padding:14px 16px;border-bottom:1px solid var(--gbr);display:flex;justify-content:space-between;align-items:center"><strong style="font-size:.9rem">Notifications</strong><button onclick="clearNotifs()" class="btn btn-ghost btn-sm" style="font-size:.65rem">Clear All</button></div><div id="notif-list"></div></div>
+</div>
 <div style="text-align:right"><p id="hdr-user" style="font-weight:600;font-size:.85rem"></p><p id="hdr-role" style="font-size:.6rem;color:var(--gold);text-transform:uppercase;font-weight:700;letter-spacing:.1em"></p></div>
-<button onclick="doLogout()" class="btn btn-ghost btn-sm" style="color:var(--danger)">Logout</button>
+<button onclick="doLogout()" class="btn btn-ghost btn-sm" style="color:var(--danger)" id="lbl-logout">Logout</button>
 </div></header>
 
 <div style="display:flex;flex:1;overflow:hidden">
-<!-- SIDEBAR -->
 <nav class="sidebar no-print" id="sidebar"></nav>
-<!-- CONTENT -->
 <main style="flex:1;overflow:hidden">
 
 <!-- DASHBOARD -->
 <div id="pg-dashboard" class="tab-page active">
-<div class="page-header"><h2 class="page-title">Dashboard</h2><button onclick="loadDash()" class="btn btn-ghost btn-sm">🔄 Refresh</button></div>
+<div class="page-header"><h2 class="page-title" data-i18n="dashboard">Dashboard</h2><button onclick="loadDash()" class="btn btn-ghost btn-sm">🔄 Refresh</button></div>
 <div class="grid-4" id="d-stats" style="margin-bottom:24px"></div>
 <div class="grid-2" style="margin-bottom:24px">
 <div class="glass" style="padding:24px"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">Quick Actions</h3><div style="display:flex;flex-wrap:wrap;gap:8px" id="d-actions"></div></div>
 <div class="glass" style="padding:24px"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">Recent Invoices</h3><div id="d-recent" style="max-height:300px;overflow-y:auto"></div></div>
-</div></div>
+</div>
+<div class="glass" style="padding:24px;margin-bottom:24px" id="d-activity"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">📊 Revenue Summary (Last 7 Days)</h3><div id="d-chart" style="display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:16px"></div></div>
+</div>
 
 <!-- POS -->
 <div id="pg-pos" class="tab-page">
-<div class="page-header"><h2 class="page-title">POS Terminal</h2></div>
+<div class="page-header"><h2 class="page-title" data-i18n="pos">POS Terminal</h2></div>
 <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;height:calc(100% - 70px)">
-<div style="overflow-y:auto">
-<!-- Customer -->
+<div style="overflow-y:auto;padding-bottom:20px">
 <div class="glass" style="padding:20px;margin-bottom:16px;border-left:4px solid var(--gold)">
 <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">👤 Select Customer</h3>
-<div style="display:flex;gap:8px;margin-bottom:12px"><input id="pos-cs" type="text" class="input" placeholder="Search by name, phone..." oninput="searchPC(this.value)" style="flex:1"><button onclick="showM('cm')" class="btn btn-ghost btn-sm">+ New</button></div>
+<div style="display:flex;gap:8px;margin-bottom:12px"><input id="pos-cs" type="text" class="input" placeholder="Search by name, phone..." oninput="searchPC(this.value)" style="flex:1"><button onclick="openNewCustModal()" class="btn btn-ghost btn-sm">+ New</button></div>
 <div id="pos-cr" style="max-height:120px;overflow-y:auto"></div>
 <div id="pos-csel" style="display:none;padding:10px;background:rgba(212,175,55,.08);border-radius:var(--radsm);margin-top:8px">
 <div style="display:flex;justify-content:space-between;align-items:center"><div><p style="font-size:.7rem;color:var(--muted)">Selected:</p><p id="pos-cn" style="font-weight:600;color:var(--gold)"></p><p id="pos-cd" style="font-size:.75rem;color:var(--muted)"></p></div><button onclick="clearPC()" class="btn btn-ghost btn-sm" style="color:var(--danger)">✕</button></div>
 </div></div>
-<!-- Services -->
 <div class="glass" style="padding:20px;border-left:4px solid var(--mint)">
 <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">🛒 Select Services</h3>
 <div style="display:flex;gap:8px;margin-bottom:16px">
 <select id="pos-cf" onchange="renderPOS()" class="input" style="width:auto"><option value="all">All Centers</option><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option></select>
 <input id="pos-sf" type="text" class="input" placeholder="Search services..." oninput="renderPOS()">
 </div>
-<div id="pos-grid" style="max-height:calc(100vh - 440px);overflow-y:auto"></div>
+<div id="pos-grid"></div>
 </div></div>
 <!-- Cart -->
-<div class="glass" style="padding:20px;display:flex;flex-direction:column;height:100%;position:sticky;top:0">
+<div class="glass" style="padding:20px;display:flex;flex-direction:column;position:sticky;top:0;max-height:calc(100vh - 120px);overflow-y:auto">
 <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">Billing Queue</h3>
-<div id="pos-cart" style="flex:1;overflow-y:auto;min-height:100px;border-bottom:1px solid var(--gbr);padding-bottom:8px;margin-bottom:12px"></div>
-<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center"><label class="label" style="margin:0;white-space:nowrap">Discount %</label><input id="pos-disc" type="number" class="input" value="0" min="0" max="100" oninput="updateTotals()" style="width:80px;padding:8px"></div>
+<div id="pos-cart" style="flex:1;overflow-y:auto;min-height:80px;border-bottom:1px solid var(--gbr);padding-bottom:8px;margin-bottom:12px"></div>
+<div id="disc-row" style="display:none;gap:8px;margin-bottom:12px;align-items:center"><label class="label" style="margin:0;white-space:nowrap">Discount %</label><input id="pos-disc" type="number" class="input" value="0" min="0" max="100" oninput="updateTotals()" style="width:80px;padding:8px"></div>
 <div style="margin-bottom:16px">
 <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:4px"><span>Subtotal</span><span id="c-sub">0.00 AED</span></div>
-<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:4px"><span>Discount</span><span id="c-disc">0.00 AED</span></div>
-<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:8px"><span>VAT (5%)</span><span id="c-vat">0.00 AED</span></div>
+<div id="c-disc-row" style="display:none;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:4px"><span>Discount</span><span id="c-disc">0.00 AED</span></div>
+<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:8px"><span>VAT (<span id="vat-lbl">5</span>%)</span><span id="c-vat">0.00 AED</span></div>
 <div style="display:flex;justify-content:space-between;font-size:1.2rem;font-weight:700;padding-top:8px;border-top:1px solid var(--gbr)"><span>Total</span><span id="c-total" style="color:var(--mint);font-family:var(--mono)">0.00 AED</span></div>
 </div>
 <div style="margin-bottom:12px"><label class="label">Payment Method</label><select id="pos-pay" class="input"><option value="cash">💵 Cash</option><option value="card">💳 Card</option><option value="bank">🏦 Bank Transfer</option><option value="cheque">📝 Cheque</option></select></div>
 <button onclick="clearCart()" class="btn btn-danger" style="width:100%;margin-bottom:8px">Clear Cart</button>
 <button onclick="processPayment()" class="btn btn-gold" style="width:100%;padding:14px;font-size:.95rem;letter-spacing:.1em">PROCESS PAYMENT</button>
 </div></div></div>
-
 <!-- INVOICES -->
 <div id="pg-invoices" class="tab-page">
-<div class="page-header"><h2 class="page-title">Invoices</h2>
-<div style="display:flex;gap:8px;align-items:center"><input id="inv-from" type="date" class="input" style="width:auto;padding:6px 10px;font-size:.8rem"><input id="inv-to" type="date" class="input" style="width:auto;padding:6px 10px;font-size:.8rem"><button onclick="loadInv()" class="btn btn-gold btn-sm">Filter</button><button onclick="loadInv()" class="btn btn-ghost btn-sm">🔄</button></div>
+<div class="page-header"><h2 class="page-title" data-i18n="invoices">Invoices</h2>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="inv-from" type="date" class="input" style="width:auto;padding:6px 10px;font-size:.8rem"><input id="inv-to" type="date" class="input" style="width:auto;padding:6px 10px;font-size:.8rem"><button onclick="loadInv()" class="btn btn-gold btn-sm">Filter</button><button onclick="loadInv()" class="btn btn-ghost btn-sm">🔄</button></div>
 </div>
 <div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Invoice #</th><th>Customer</th><th>Date</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody id="inv-tb"></tbody></table></div></div>
 
 <!-- CUSTOMERS -->
 <div id="pg-customers" class="tab-page">
-<div class="page-header"><h2 class="page-title">Customers</h2>
-<div style="display:flex;gap:8px"><input id="cust-s" type="text" class="input" placeholder="Search..." oninput="loadCust()" style="width:220px;padding:8px 14px"><button onclick="showM('cm')" class="btn btn-gold btn-sm">+ Add Customer</button></div>
+<div class="page-header"><h2 class="page-title" data-i18n="customers">Customers</h2>
+<div style="display:flex;gap:8px"><input id="cust-s" type="text" class="input" placeholder="Search..." oninput="renderCustTbl()" style="width:220px;padding:8px 14px"><button onclick="openNewCustModal()" class="btn btn-gold btn-sm">+ Add Customer</button></div>
 </div>
 <div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Code</th><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead><tbody id="cust-tb"></tbody></table></div></div>
 
 <!-- SERVICES -->
 <div id="pg-services" class="tab-page">
-<div class="page-header"><h2 class="page-title">Services</h2>
+<div class="page-header"><h2 class="page-title" data-i18n="services">Services</h2>
 <div style="display:flex;gap:8px"><button onclick="showM('sm')" class="btn btn-gold btn-sm">+ Add Service</button><button onclick="loadSvc()" class="btn btn-ghost btn-sm">🔄</button></div>
 </div>
 <div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Code</th><th>Service</th><th>Category</th><th>Center</th><th>Price</th><th>VAT</th><th>Status</th><th>Actions</th></tr></thead><tbody id="svc-tb"></tbody></table></div></div>
 
 <!-- USERS -->
 <div id="pg-users" class="tab-page">
-<div class="page-header"><h2 class="page-title">Users</h2>
+<div class="page-header"><h2 class="page-title" data-i18n="users">Users</h2>
 <div style="display:flex;gap:8px"><button onclick="showM('um')" class="btn btn-gold btn-sm">+ Add User</button><button onclick="loadUsr()" class="btn btn-ghost btn-sm">🔄</button></div>
 </div>
 <div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead><tbody id="usr-tb"></tbody></table></div></div>
 
 <!-- BRANCHES -->
 <div id="pg-branches" class="tab-page">
-<div class="page-header"><h2 class="page-title">Branches</h2>
-<div style="display:flex;gap:8px"><button onclick="showM('bm')" class="btn btn-gold btn-sm">+ Add Branch</button><button onclick="loadBr()" class="btn btn-ghost btn-sm">🔄</button></div>
+<div class="page-header"><h2 class="page-title" data-i18n="branches">Branches</h2>
+<div style="display:flex;gap:8px"><button onclick="showM('bm')" class="btn btn-gold btn-sm" id="add-br-btn">+ Add Branch</button><button onclick="loadBr()" class="btn btn-ghost btn-sm">🔄</button></div>
 </div>
 <div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Code</th><th>Name</th><th>City</th><th>Phone</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead><tbody id="br-tb"></tbody></table></div></div>
 
 <!-- HR -->
 <div id="pg-hr" class="tab-page">
-<div class="page-header"><h2 class="page-title">HR & Attendance</h2>
-<div style="display:flex;gap:8px"><button onclick="doCheckIn()" class="btn btn-mint btn-sm">☀️ Check In</button><button onclick="doCheckOut()" class="btn btn-ghost btn-sm">🌙 Check Out</button></div>
-</div>
+<div class="page-header"><h2 class="page-title" data-i18n="hr">HR & Attendance</h2>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button onclick="doCheckIn()" class="btn btn-mint btn-sm">☀️ Check In</button>
+<button onclick="doCheckOut()" class="btn btn-ghost btn-sm">🌙 Check Out</button>
+<button onclick="showPage('leave')" class="btn btn-ghost btn-sm">📋 Leave Requests</button>
+</div></div>
 <div class="grid-4" style="margin-bottom:24px">
 <div class="stat-card"><p class="sl">Present</p><p class="sv" id="hr-p" style="color:var(--success)">0</p></div>
 <div class="stat-card"><p class="sl">Absent</p><p class="sv" id="hr-a" style="color:var(--danger)">0</p></div>
 <div class="stat-card"><p class="sl">Late</p><p class="sv" id="hr-l" style="color:var(--warn)">0</p></div>
-<div class="stat-card"><p class="sl">Leave Pending</p><p class="sv" id="hr-lv" style="color:var(--info)">0</p></div>
+<div class="stat-card"><p class="sl">Avg Hours</p><p class="sv" id="hr-avg" style="color:var(--info)">0</p></div>
 </div>
-<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>User</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead><tbody id="hr-tb"></tbody></table></div></div>
+<div style="margin-bottom:16px;display:flex;gap:8px"><label class="label" style="margin:0;line-height:32px">Date:</label><input id="hr-date" type="date" class="input" style="width:auto;padding:6px 10px" onchange="loadHR()"></div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>User</th><th>Role</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead><tbody id="hr-tb"></tbody></table></div></div>
+
+<!-- LEAVE -->
+<div id="pg-leave" class="tab-page">
+<div class="page-header"><h2 class="page-title">Leave Management</h2>
+<div style="display:flex;gap:8px"><button onclick="showM('lvm')" class="btn btn-gold btn-sm">+ Request Leave</button><button onclick="showPage('hr')" class="btn btn-ghost btn-sm">← Back to HR</button></div>
+</div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead><tbody id="lv-tb"></tbody></table></div></div>
+
+<!-- LOGIN LOGS -->
+<div id="pg-logs" class="tab-page">
+<div class="page-header"><h2 class="page-title">Login Activity Logs</h2><button onclick="loadLogs()" class="btn btn-ghost btn-sm">🔄 Refresh</button></div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>User</th><th>Role</th><th>Date & Time</th><th>IP Address</th><th>Device</th><th>Status</th></tr></thead><tbody id="log-tb"></tbody></table></div></div>
+
+<!-- DELETED INVOICES -->
+<div id="pg-deleted" class="tab-page">
+<div class="page-header"><h2 class="page-title">🗑️ Deleted Invoices Archive</h2></div>
+<div class="glass" style="overflow:auto"><table class="tbl"><thead><tr><th>Invoice #</th><th>Customer</th><th>Amount</th><th>Deleted By</th><th>Reason</th><th>Date Deleted</th><th>Actions</th></tr></thead><tbody id="del-tb"></tbody></table></div></div>
 
 <!-- REPORTS -->
 <div id="pg-reports" class="tab-page">
-<div class="page-header"><h2 class="page-title">Reports</h2></div>
+<div class="page-header"><h2 class="page-title" data-i18n="reports">Reports</h2></div>
 <div class="grid-3" style="margin-bottom:24px">
 <button onclick="genRpt('yesterday')" class="btn btn-ghost" style="padding:20px;justify-content:center">📊 Yesterday</button>
 <button onclick="genRpt('week')" class="btn btn-ghost" style="padding:20px;justify-content:center">📈 Last Week</button>
 <button onclick="genRpt('month')" class="btn btn-ghost" style="padding:20px;justify-content:center">📉 Last Month</button>
 </div>
 <div class="grid-2" style="margin-bottom:16px"><div><label class="label">From</label><input id="rpt-from" type="date" class="input"></div><div><label class="label">To</label><input id="rpt-to" type="date" class="input"></div></div>
-<div style="display:flex;gap:8px;margin-bottom:24px"><button onclick="genRpt('custom')" class="btn btn-gold">Generate Report</button><button onclick="exportRpt('csv')" class="btn btn-ghost">📊 Export CSV</button></div>
+<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap"><button onclick="genRpt('custom')" class="btn btn-gold">Generate Report</button><button onclick="exportRpt('csv')" class="btn btn-ghost">📊 Export CSV</button><button onclick="exportRpt('json')" class="btn btn-ghost">📦 Export JSON</button></div>
 <div id="rpt-out" class="glass" style="padding:24px;min-height:200px"><p style="color:var(--muted);text-align:center;padding:40px">Select a report period above</p></div></div>
 
 <!-- SETTINGS -->
 <div id="pg-settings" class="tab-page">
-<div class="page-header"><h2 class="page-title">Settings</h2></div>
+<div class="page-header"><h2 class="page-title" data-i18n="settings">Settings</h2></div>
 <div class="grid-2" style="margin-bottom:24px">
 <div class="glass" style="padding:24px;border-left:4px solid var(--gold)">
 <h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">🏢 Company Settings</h3>
-<label class="label">Company Name</label><input id="s-company" class="input" value="Government Services" style="margin-bottom:12px">
-<label class="label">VAT Rate (%)</label><input id="s-vat" type="number" class="input" value="5" style="margin-bottom:12px">
+<label class="label">Company Name</label><input id="s-company" class="input" style="margin-bottom:12px">
+<label class="label">VAT Rate (%)</label><input id="s-vat" type="number" class="input" style="margin-bottom:12px">
 <label class="label">Currency</label><select id="s-cur" class="input" style="margin-bottom:12px"><option value="AED">AED</option><option value="USD">USD</option><option value="SSP">SSP</option></select>
-<button onclick="saveSets()" class="btn btn-gold" style="width:100%;margin-top:8px">Save Settings</button>
+<label class="label">Browser Tab Title</label><input id="s-tabtitle" class="input" style="margin-bottom:16px" placeholder="GSERP | Government Services ERP">
+<button onclick="saveSets()" class="btn btn-gold" style="width:100%">Save Settings</button>
 </div>
 <div class="glass" style="padding:24px;border-left:4px solid var(--mint)">
-<h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">🔐 License & System</h3>
-<p style="font-size:.85rem;margin-bottom:8px">License: <span class="badge badge-mint">Active - Trial</span></p>
-<p style="font-size:.85rem;margin-bottom:16px">Version: <span style="font-family:var(--mono)">2.0.0</span></p>
-<div class="grid-2" id="sys-stats" style="margin-bottom:16px"></div>
-<button onclick="exportAll()" class="btn btn-ghost" style="width:100%;margin-bottom:8px">📥 Export All Data</button>
-</div></div></div>
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">🔧 Feature Toggles</h3>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:.85rem">Enable Discounts</span><label class="toggle-sw"><input type="checkbox" id="s-disc" onchange="saveSets()"><span class="toggle-sl"></span></label></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:.85rem">Show Audit Logs</span><label class="toggle-sw"><input type="checkbox" id="s-logs" checked onchange="saveSets()"><span class="toggle-sl"></span></label></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:.85rem">Notifications</span><label class="toggle-sw"><input type="checkbox" id="s-notif" checked onchange="saveSets()"><span class="toggle-sl"></span></label></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:.85rem">Allow Branch Creation</span><label class="toggle-sw"><input type="checkbox" id="s-branchcreate" checked onchange="saveSets()"><span class="toggle-sl"></span></label></div>
+</div></div>
+<div class="glass" style="padding:24px;margin-bottom:24px">
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">📊 System Statistics</h3>
+<div class="grid-4" id="sys-stats"></div>
+</div>
+<div class="grid-2">
+<button onclick="exportAll()" class="btn btn-ghost" style="padding:16px;justify-content:center">📥 Export All Data</button>
+<button onclick="showPage('deleted')" class="btn btn-ghost" style="padding:16px;justify-content:center">🗑️ Deleted Invoices Archive</button>
+</div>
+</div>
 
 </main></div></div>
-
 <!-- MODALS -->
 <!-- Customer Modal -->
 <div id="cm" class="modal-overlay" onclick="if(event.target===this)hideM('cm')"><div class="modal-box"><h3>Customer</h3><input type="hidden" id="cm-id">
-<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Name *</label><input id="cm-name" class="input" placeholder="Full name"></div><div><label class="label">Type *</label><select id="cm-type" class="input"><option value="individual">Individual</option><option value="company">Company</option><option value="hotel">Hotel</option><option value="restaurant">Restaurant</option><option value="store">Store</option><option value="supermarket">Supermarket</option><option value="factory">Factory</option><option value="pharmacy">Pharmacy</option></select></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Name *</label><input id="cm-name" class="input" placeholder="Full name"></div><div><label class="label">Type *</label><select id="cm-type" class="input"><option value="individual">Individual</option><option value="company">Company</option><option value="hotel">Hotel</option><option value="restaurant">Restaurant</option><option value="store">Store</option><option value="supermarket">Supermarket</option><option value="factory">Factory</option><option value="pharmacy">Pharmacy</option><option value="warehouse">Warehouse</option><option value="tent_rental">Tent Rental</option></select></div></div>
 <div class="grid-2" style="margin-bottom:12px"><div><label class="label">Phone *</label><input id="cm-phone" class="input" placeholder="+971..."></div><div><label class="label">Email</label><input id="cm-email" type="email" class="input" placeholder="email@example.com"></div></div>
-<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Tax ID</label><input id="cm-taxid" class="input"></div><div><label class="label">Trade License</label><input id="cm-lic" class="input"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Company Name</label><input id="cm-company" class="input"></div><div><label class="label">Tax ID</label><input id="cm-taxid" class="input"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Trade License</label><input id="cm-lic" class="input"></div><div><label class="label">License Expiry</label><input id="cm-licexp" type="date" class="input"></div></div>
 <div style="margin-bottom:16px"><label class="label">Address</label><input id="cm-addr" class="input" placeholder="Address"></div>
 <div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('cm')" class="btn btn-ghost">Cancel</button><button onclick="saveCust()" class="btn btn-gold">Save</button></div></div></div>
 
 <!-- Service Modal -->
 <div id="sm" class="modal-overlay" onclick="if(event.target===this)hideM('sm')"><div class="modal-box"><h3>Service</h3><input type="hidden" id="sm-id">
 <div class="grid-2" style="margin-bottom:12px"><div><label class="label">Code *</label><input id="sm-code" class="input" placeholder="AD-U-01"></div><div><label class="label">Name *</label><input id="sm-name" class="input" placeholder="Service name"></div></div>
-<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Category *</label><select id="sm-cat" class="input"><option value="Utilities">Utilities</option><option value="Licensing">Licensing</option><option value="Transportation">Transportation</option><option value="Public Services">Public Services</option></select></div><div><label class="label">Center *</label><select id="sm-cen" class="input"><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option></select></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Category *</label><select id="sm-cat" class="input"><option value="Utilities">Utilities</option><option value="Licensing">Licensing</option><option value="Transportation">Transportation</option><option value="Public Services">Public Services</option><option value="Taxes">Taxes</option><option value="Permits">Permits</option></select></div><div><label class="label">Center *</label><select id="sm-cen" class="input"><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option></select></div></div>
 <div class="grid-2" style="margin-bottom:12px"><div><label class="label">Price *</label><input id="sm-price" type="number" class="input" placeholder="0.00"></div><div><label class="label">Icon</label><input id="sm-icon" class="input" placeholder="⚡"></div></div>
 <div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('sm')" class="btn btn-ghost">Cancel</button><button onclick="saveSvc()" class="btn btn-gold">Save</button></div></div></div>
 
@@ -277,200 +329,264 @@ body{font-family:var(--font);background:var(--navy);color:var(--txt);overflow:hi
 <div style="margin-bottom:16px"><label class="label">Address</label><input id="bm-addr" class="input"></div>
 <div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('bm')" class="btn btn-ghost">Cancel</button><button onclick="saveBr()" class="btn btn-gold">Save</button></div></div></div>
 
-<!-- Invoice Preview Modal -->
-<div id="ivm" class="modal-overlay" onclick="if(event.target===this)hideM('ivm')"><div class="modal-box" style="max-width:800px;padding:0;background:#fff"><div id="iv-preview"></div>
+<!-- Invoice Preview -->
+<div id="ivm" class="modal-overlay" onclick="if(event.target===this)hideM('ivm')"><div class="modal-box wide" style="padding:0;background:#fff"><div id="iv-preview"></div>
 <div class="no-print" style="padding:16px 32px 24px;display:flex;gap:8px;justify-content:flex-end;background:var(--navy-lt);border-top:1px solid var(--gbr)"><button onclick="hideM('ivm')" class="btn btn-ghost">Close</button><button onclick="window.print()" class="btn btn-gold">🖨️ Print</button></div></div></div>
+
+<!-- Delete Invoice Modal -->
+<div id="dim" class="modal-overlay" onclick="if(event.target===this)hideM('dim')"><div class="modal-box"><h3>⚠️ Delete Invoice</h3>
+<p style="margin-bottom:16px;color:var(--muted)">Invoice: <strong id="dim-inv" style="color:var(--gold)"></strong></p>
+<input type="hidden" id="dim-id">
+<label class="label">Reason for Deletion *</label><textarea id="dim-reason" class="input" rows="3" placeholder="Enter reason for removing this invoice..." style="resize:vertical"></textarea>
+<p style="font-size:.75rem;color:var(--muted);margin:8px 0 16px">This invoice will be moved to the archive and can be restored later.</p>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('dim')" class="btn btn-ghost">Cancel</button><button onclick="confirmDeleteInv()" class="btn btn-danger">Delete Invoice</button></div></div></div>
+
+<!-- Leave Request Modal -->
+<div id="lvm" class="modal-overlay" onclick="if(event.target===this)hideM('lvm')"><div class="modal-box"><h3>Leave Request</h3>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">Leave Type *</label><select id="lv-type" class="input"><option value="annual">Annual Leave</option><option value="sick">Sick Leave</option><option value="emergency">Emergency Leave</option><option value="unpaid">Unpaid Leave</option></select></div><div><label class="label">Days</label><input id="lv-days" type="number" class="input" value="1" min="1"></div></div>
+<div class="grid-2" style="margin-bottom:12px"><div><label class="label">From *</label><input id="lv-from" type="date" class="input"></div><div><label class="label">To *</label><input id="lv-to" type="date" class="input"></div></div>
+<div style="margin-bottom:16px"><label class="label">Reason</label><textarea id="lv-reason" class="input" rows="2" style="resize:vertical"></textarea></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="hideM('lvm')" class="btn btn-ghost">Cancel</button><button onclick="submitLeave()" class="btn btn-gold">Submit Request</button></div></div></div>
 <script>
 const API='https://gserp-backend.onrender.com/api';
 const $=id=>document.getElementById(id);
-let S={token:localStorage.getItem('gserp_t'),user:null,services:[],customers:[],invoices:[],users:[],branches:[],cart:[],selCust:null,lang:localStorage.getItem('gserp_l')||'en',theme:localStorage.getItem('gserp_th')||'dark',sets:JSON.parse(localStorage.getItem('gserp_s')||'{"vat":5,"currency":"AED","company":"Government Services"}'),offQ:JSON.parse(localStorage.getItem('gserp_oq')||'[]')};
+const VER='2.3';
+
+// STATE
+let S={token:localStorage.getItem('gserp_t'),user:null,services:[],customers:[],invoices:[],users:[],branches:[],cart:[],selCust:null,
+lang:localStorage.getItem('gserp_l')||'en',theme:localStorage.getItem('gserp_th')||'dark',
+sets:JSON.parse(localStorage.getItem('gserp_s')||'{"vat":5,"currency":"AED","company":"Government Services","discountEnabled":false,"logsEnabled":true,"notifEnabled":true,"branchCreateEnabled":true,"tabTitle":"GSERP | Government Services ERP"}'),
+offQ:JSON.parse(localStorage.getItem('gserp_oq')||'[]'),
+notifs:JSON.parse(localStorage.getItem('gserp_n')||'[]'),
+deletedInvoices:JSON.parse(localStorage.getItem('gserp_del')||'[]'),
+loginLogs:JSON.parse(localStorage.getItem('gserp_logs')||'[]'),
+leaveRequests:JSON.parse(localStorage.getItem('gserp_lv')||'[]')};
+
+// i18n
+const T={en:{dashboard:'Dashboard',pos:'POS Terminal',invoices:'Invoices',customers:'Customers',services:'Services',users:'Users',branches:'Branches',hr:'HR & Attendance',reports:'Reports',settings:'Settings',logs:'Login Logs',deleted:'Deleted Invoices',leave:'Leave Mgmt',signin:'SIGN IN',username:'Username',password:'Password',forgot:'Forgot password?',logout:'Logout',search:'Search...',save:'Save',cancel:'Cancel',delete:'Delete',edit:'Edit',view:'View',print:'Print',close:'Close',total:'Total',subtotal:'Subtotal',discount:'Discount',vat:'VAT',payment:'Payment',customer:'Customer',date:'Date',status:'Status',actions:'Actions',nodata:'No data available'},
+ar:{dashboard:'لوحة التحكم',pos:'نقطة البيع',invoices:'الفواتير',customers:'العملاء',services:'الخدمات',users:'المستخدمين',branches:'الفروع',hr:'الموارد البشرية',reports:'التقارير',settings:'الإعدادات',logs:'سجل الدخول',deleted:'الفواتير المحذوفة',leave:'إدارة الإجازات',signin:'تسجيل الدخول',username:'اسم المستخدم',password:'كلمة المرور',forgot:'نسيت كلمة المرور؟',logout:'تسجيل الخروج',search:'بحث...',save:'حفظ',cancel:'إلغاء',delete:'حذف',edit:'تعديل',view:'عرض',print:'طباعة',close:'إغلاق',total:'الإجمالي',subtotal:'المجموع الفرعي',discount:'الخصم',vat:'الضريبة',payment:'الدفع',customer:'العميل',date:'التاريخ',status:'الحالة',actions:'الإجراءات',nodata:'لا توجد بيانات'}};
 
 // API
-async function api(p,o={}){const h={'Content-Type':'application/json'};if(S.token)h['Authorization']='Bearer '+S.token;try{const r=await fetch(API+p,{...o,headers:h});const d=await r.json();if(!r.ok)throw new Error(d.message||d.error||'Failed');return d;}catch(e){if(e.message.includes('fetch')||e.message.includes('network')){updateOnline(false);throw new Error('Network error');}throw e;}}
+async function api(p,o={}){const h={'Content-Type':'application/json'};if(S.token)h['Authorization']='Bearer '+S.token;try{const r=await fetch(API+p,{...o,headers:h});const d=await r.json();if(!r.ok)throw new Error(d.message||d.error||'Request failed');return d;}catch(e){if(e.message.includes('fetch')||e.message.includes('network')||e.message.includes('Failed')){updateOnline(false);throw new Error('Network error - working offline');}throw e;}}
 
 // Utils
-function toast(m,t='info'){const e=document.createElement('div');e.className='toast toast-'+t;e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>e.remove(),4000);}
+function toast(m,t='info'){const e=document.createElement('div');e.className='toast toast-'+t;e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(100%)';e.style.transition='all .3s';setTimeout(()=>e.remove(),300);},3500);}
 function showL(m='Loading...'){$('loading-text').textContent=m;$('loading-overlay').classList.add('active');}
 function hideL(){$('loading-overlay').classList.remove('active');}
 function showM(id){$(id).classList.add('active');}
 function hideM(id){$(id).classList.remove('active');}
 function updateOnline(on){$('sync-ind').className='sync-dot '+(on?'online':'offline');$('sync-txt').textContent=on?'Online':'Offline';if(on&&S.offQ.length)syncOff();}
-async function syncOff(){for(const i of S.offQ){try{await api(i.p,i.o);}catch{}}S.offQ=[];localStorage.setItem('gserp_oq','[]');toast('Offline data synced!','success');}
+function fmtDate(d){if(!d)return'-';try{const dt=new Date(d);if(isNaN(dt))return'-';return dt.toLocaleDateString('en-GB')+' '+dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch{return'-';}}
+function fmtMoney(n){return parseFloat(n||0).toFixed(2)+' '+S.sets.currency;}
+function maxDisc(){if(!S.sets.discountEnabled)return 0;const r=S.user?.role;return r==='super_admin'?100:r==='admin'?75:r==='supervisor'?50:r==='cashier'?20:0;}
+function addNotif(msg,type='info'){const n={id:Date.now(),msg,type,time:new Date().toISOString(),read:false};S.notifs.unshift(n);if(S.notifs.length>50)S.notifs=S.notifs.slice(0,50);localStorage.setItem('gserp_n',JSON.stringify(S.notifs));updateNotifUI();}
+function daysAgo(n){const d=new Date();d.setDate(d.getDate()-n);return d;}
+
+// Notifications
+function toggleNotif(){$('notif-panel').classList.toggle('show');}
+function updateNotifUI(){const unread=S.notifs.filter(n=>!n.read).length;$('notif-count').textContent=unread;$('notif-count').style.display=unread>0?'flex':'none';$('notif-list').innerHTML=S.notifs.length?S.notifs.slice(0,15).map(n=>`<div class="notif-item ${n.read?'':'unread'}" onclick="markNotifRead('${n.id}')"><p style="font-size:.8rem;margin-bottom:4px">${n.msg}</p><p style="font-size:.65rem;color:var(--dim)">${fmtDate(n.time)}</p></div>`).join(''):'<p style="padding:24px;text-align:center;color:var(--muted);font-size:.8rem">No notifications</p>';}
+function markNotifRead(id){const n=S.notifs.find(x=>x.id==id);if(n)n.read=true;localStorage.setItem('gserp_n',JSON.stringify(S.notifs));updateNotifUI();}
+function clearNotifs(){S.notifs=[];localStorage.setItem('gserp_n','[]');updateNotifUI();}
+document.addEventListener('click',e=>{if(!$('notif-wrap')?.contains(e.target))$('notif-panel')?.classList.remove('show');});
+
+// Sync
+async function syncOff(){let ok=0;for(const i of S.offQ){try{await api(i.p,i.o);ok++;}catch{}}S.offQ=[];localStorage.setItem('gserp_oq','[]');if(ok)toast(ok+' items synced!','success');}
 window.addEventListener('online',()=>updateOnline(true));
 window.addEventListener('offline',()=>updateOnline(false));
+
+// Theme & Language
 function setTheme(t){S.theme=t;localStorage.setItem('gserp_th',t);document.documentElement.setAttribute('data-theme',t);$('theme-sel').value=t;}
-function toggleLang(){S.lang=S.lang==='en'?'ar':'en';localStorage.setItem('gserp_l',S.lang);document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';$('lang-btn').textContent=S.lang==='ar'?'🌐 AR':'🌐 EN';}
-function fmtDate(d){if(!d)return'-';const dt=new Date(d);return dt.toLocaleDateString()+' '+dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
-function maxDisc(){const r=S.user?.role;return r==='super_admin'?100:r==='admin'?75:r==='supervisor'?50:r==='cashier'?20:0;}
+function toggleLang(){S.lang=S.lang==='en'?'ar':'en';localStorage.setItem('gserp_l',S.lang);applyLang();}
+function applyLang(){const dir=S.lang==='ar'?'rtl':'ltr';document.documentElement.dir=dir;document.documentElement.lang=S.lang;$('lang-btn').textContent=S.lang==='ar'?'🌐 AR':'🌐 EN';$('lbl-user')&&($('lbl-user').textContent=T[S.lang].username);$('lbl-pass')&&($('lbl-pass').textContent=T[S.lang].password);$('lbl-forgot')&&($('lbl-forgot').textContent=T[S.lang].forgot);$('lbl-signin')&&($('lbl-signin').textContent=T[S.lang].signin);$('lbl-logout')&&($('lbl-logout').textContent=T[S.lang].logout);document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(T[S.lang][k])el.textContent=T[S.lang][k];});}
 
 // Auth
-async function doLogin(){const u=$('login-user').value.trim(),p=$('login-pass').value;if(!u||!p){$('login-error').textContent='Enter username and password';$('login-error').style.display='block';return;}showL('Authenticating...');try{const r=await api('/auth/login',{method:'POST',body:JSON.stringify({username:u,password:p})});S.token=r.token||r.data?.token;S.user=r.user||r.data?.user||r.data;localStorage.setItem('gserp_t',S.token);$('login-error').style.display='none';initApp();}catch(e){$('login-error').textContent=e.message||'Invalid credentials';$('login-error').style.display='block';}hideL();}
-function doLogout(){if(!confirm('Logout from GSERP?'))return;localStorage.removeItem('gserp_t');S.token=null;S.user=null;location.reload();}
+async function doLogin(){const u=$('login-user').value.trim(),p=$('login-pass').value;if(!u||!p){$('login-error').textContent='Enter username and password';$('login-error').style.display='block';return;}showL('Authenticating...');try{const r=await api('/auth/login',{method:'POST',body:JSON.stringify({username:u,password:p})});S.token=r.token||r.data?.token;S.user=r.user||r.data?.user||r.data;localStorage.setItem('gserp_t',S.token);$('login-error').style.display='none';
+S.loginLogs.unshift({user:S.user.username||u,role:S.user.role||'unknown',time:new Date().toISOString(),ip:'--',device:navigator.userAgent.includes('Mobile')?'Mobile':'Desktop',status:'success'});localStorage.setItem('gserp_logs',JSON.stringify(S.loginLogs.slice(0,200)));
+addNotif('Welcome back, '+(S.user.full_name||S.user.fullName||S.user.username)+'!','info');initApp();}catch(e){$('login-error').textContent=e.message||'Invalid credentials';$('login-error').style.display='block';S.loginLogs.unshift({user:u,role:'-',time:new Date().toISOString(),ip:'--',device:navigator.userAgent.includes('Mobile')?'Mobile':'Desktop',status:'failed'});localStorage.setItem('gserp_logs',JSON.stringify(S.loginLogs.slice(0,200)));}hideL();}
+function doLogout(){if(!confirm('Logout from GSERP?'))return;addNotif(S.user?.username+' logged out','info');localStorage.removeItem('gserp_t');S.token=null;S.user=null;location.reload();}
 
 // Init
 async function initApp(){$('login-screen').style.display='none';$('app').style.display='flex';
 if(!S.user){try{const me=await api('/auth/me');S.user=me.data||me.user||me;}catch{localStorage.removeItem('gserp_t');location.reload();return;}}
 $('hdr-user').textContent=S.user.full_name||S.user.fullName||S.user.username;
 $('hdr-role').textContent=(S.user.role||'').replace(/_/g,' ');
-buildSidebar();startClock();setTheme(S.theme);updateOnline(navigator.onLine);
-if(S.lang==='ar'){document.documentElement.dir='rtl';$('lang-btn').textContent='🌐 AR';}
-await Promise.all([loadSvc(),loadCust(),loadInv(),loadBr()]);
+document.title=S.sets.tabTitle||'GSERP | Government Services ERP';
+if(S.sets.company){$('hdr-company').innerHTML=S.sets.company+' <span style="color:var(--gold);font-weight:300">ERP</span>';}
+buildSidebar();startClock();setTheme(S.theme);applyLang();updateOnline(navigator.onLine);updateNotifUI();
+await Promise.allSettled([loadSvc(),loadCust(),loadInv(),loadBr()]);
 if(['super_admin','admin','supervisor'].includes(S.user.role))await loadUsr();
-loadDash();showPage('dashboard');}
+generateDummyData();loadDash();showPage('dashboard');}
 
-// Clock
 function startClock(){const t=()=>{const n=new Date();$('hdr-clock').textContent=n.toLocaleTimeString();$('hdr-date').textContent=n.toDateString().toUpperCase();};t();setInterval(t,1000);}
 
 // Sidebar
 function buildSidebar(){const r=S.user?.role||'cashier';const m=[
-{id:'dashboard',ic:'📊',lb:'Dashboard',rl:['super_admin','admin','supervisor','cashier','monitor']},
-{id:'pos',ic:'💳',lb:'POS Terminal',rl:['super_admin','admin','supervisor','cashier']},
-{id:'invoices',ic:'📄',lb:'Invoices',rl:['super_admin','admin','supervisor','cashier','monitor']},
-{id:'customers',ic:'👥',lb:'Customers',rl:['super_admin','admin','supervisor','cashier']},
-{id:'services',ic:'🏛️',lb:'Services',rl:['super_admin','admin']},
-{id:'users',ic:'👤',lb:'Users',rl:['super_admin','admin','supervisor']},
-{id:'branches',ic:'🏢',lb:'Branches',rl:['super_admin','admin']},
-{id:'hr',ic:'⏰',lb:'HR & Attendance',rl:['super_admin','admin','supervisor']},
-{id:'reports',ic:'📈',lb:'Reports',rl:['super_admin','admin','supervisor','monitor']},
-{id:'settings',ic:'⚙️',lb:'Settings',rl:['super_admin']}];
+{id:'dashboard',ic:'📊',lb:'dashboard',rl:['super_admin','admin','supervisor','cashier','monitor']},
+{id:'pos',ic:'💳',lb:'pos',rl:['super_admin','admin','supervisor','cashier']},
+{id:'invoices',ic:'📄',lb:'invoices',rl:['super_admin','admin','supervisor','cashier','monitor']},
+{id:'customers',ic:'👥',lb:'customers',rl:['super_admin','admin','supervisor','cashier']},
+{id:'services',ic:'🏛️',lb:'services',rl:['super_admin','admin']},
+{id:'users',ic:'👤',lb:'users',rl:['super_admin','admin','supervisor']},
+{id:'branches',ic:'🏢',lb:'branches',rl:['super_admin','admin']},
+{id:'hr',ic:'⏰',lb:'hr',rl:['super_admin','admin','supervisor']},
+{id:'logs',ic:'📋',lb:'logs',rl:['super_admin','admin']},
+{id:'reports',ic:'📈',lb:'reports',rl:['super_admin','admin','supervisor','monitor']},
+{id:'settings',ic:'⚙️',lb:'settings',rl:['super_admin']}];
 $('sidebar').innerHTML='<p style="font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.2em;font-weight:700;margin-bottom:16px;padding:0 16px">Menu</p>'+
-m.filter(x=>x.rl.includes(r)).map(x=>`<button class="sidebar-btn${x.id==='dashboard'?' active-tab':''}" onclick="showPage('${x.id}')" id="nav-${x.id}"><span style="font-size:1.1rem;width:24px;text-align:center">${x.ic}</span>${x.lb}</button>`).join('')+
-'<div style="flex:1"></div><div class="glass" style="padding:12px;background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.1)"><p style="font-size:.6rem;color:var(--success);text-transform:uppercase;font-weight:700;margin-bottom:4px">System</p><div style="display:flex;align-items:center;gap:6px"><span class="sync-dot online"></span><span style="font-size:.75rem">Connected</span></div></div>';}
+m.filter(x=>x.rl.includes(r)).map(x=>`<button class="sidebar-btn${x.id==='dashboard'?' active-tab':''}" onclick="showPage('${x.id}')" id="nav-${x.id}"><span style="font-size:1.1rem;width:24px;text-align:center">${x.ic}</span><span>${T[S.lang][x.lb]||x.lb}</span></button>`).join('')+
+'<div style="flex:1"></div><div style="padding:12px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.1);border-radius:var(--radsm)"><p style="font-size:.6rem;color:var(--success);text-transform:uppercase;font-weight:700;margin-bottom:4px">v'+VER+'</p><div style="display:flex;align-items:center;gap:6px"><span class="sync-dot online"></span><span style="font-size:.75rem">Connected</span></div></div>';}
 
-function showPage(id){document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active-tab'));const pg=$('pg-'+id),nv=$('nav-'+id);if(pg)pg.classList.add('active');if(nv)nv.classList.add('active-tab');
-if(id==='pos')renderPOS();if(id==='invoices')loadInv();if(id==='customers')loadCust();if(id==='services')loadSvc();if(id==='users')loadUsr();if(id==='branches')loadBr();if(id==='hr')loadHR();if(id==='settings')loadSets();if(id==='dashboard')loadDash();}
+function showPage(id){document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active-tab'));const pg=$('pg-'+id),nv=$('nav-'+id);if(pg){pg.classList.add('active');pg.classList.add('fade-in');}if(nv)nv.classList.add('active-tab');
+if(id==='dashboard')loadDash();if(id==='pos')renderPOS();if(id==='invoices')loadInv();if(id==='customers')loadCust();if(id==='services')loadSvc();if(id==='users')loadUsr();if(id==='branches')loadBr();if(id==='hr')loadHR();if(id==='reports'){}if(id==='settings')loadSets();if(id==='logs')loadLogs();if(id==='deleted')loadDeleted();if(id==='leave')loadLeave();}
 
 // Dashboard
-function loadDash(){const rev=S.invoices.reduce((s,i)=>s+parseFloat(i.total||0),0);const today=S.invoices.filter(i=>{const d=new Date(i.createdAt||i.created_at||i.date||0);return d.toDateString()===new Date().toDateString();});const tRev=today.reduce((s,i)=>s+parseFloat(i.total||0),0);
-$('d-stats').innerHTML=[{l:"TODAY'S REVENUE",v:tRev.toFixed(2)+' '+S.sets.currency,c:'var(--gold)'},{l:'INVOICES TODAY',v:today.length,c:'var(--mint)'},{l:'TOTAL CUSTOMERS',v:S.customers.length,c:'var(--txt)'},{l:'ACTIVE SERVICES',v:S.services.filter(s=>s.status==='active').length,c:'var(--info)'}].map(s=>`<div class="stat-card"><p class="sl">${s.l}</p><p class="sv" style="color:${s.c}">${s.v}</p></div>`).join('');
+function loadDash(){const today=new Date().toDateString();const tInv=S.invoices.filter(i=>new Date(i.createdAt||i.created_at||i.date||0).toDateString()===today);const tRev=tInv.reduce((s,i)=>s+parseFloat(i.total||0),0);const totRev=S.invoices.reduce((s,i)=>s+parseFloat(i.total||0),0);
+$('d-stats').innerHTML=[{l:"TODAY'S REVENUE",v:fmtMoney(tRev),c:'var(--gold)'},{l:'INVOICES TODAY',v:tInv.length,c:'var(--mint)'},{l:'TOTAL CUSTOMERS',v:S.customers.length,c:'var(--txt)'},{l:'TOTAL REVENUE',v:fmtMoney(totRev),c:'var(--info)'}].map(s=>`<div class="stat-card fade-in"><p class="sl">${s.l}</p><p class="sv" style="color:${s.c}">${s.v}</p></div>`).join('');
 $('d-actions').innerHTML=[{l:'New Sale',ic:'💳',p:'pos'},{l:'Customers',ic:'👥',p:'customers'},{l:'Invoices',ic:'📄',p:'invoices'},{l:'Reports',ic:'📈',p:'reports'}].map(a=>`<button onclick="showPage('${a.p}')" class="btn btn-ghost">${a.ic} ${a.l}</button>`).join('');
-const rec=S.invoices.slice(0,5);$('d-recent').innerHTML=rec.length?rec.map(i=>`<div class="cart-row" style="cursor:pointer" onclick="viewInv('${i.id}')"><div><p style="font-size:.8rem;font-weight:600;font-family:var(--mono);color:var(--gold)">${i.invoiceNumber||i.id}</p><p style="font-size:.7rem;color:var(--muted)">${i.customer?.customerName||i.customerName||'-'}</p></div><p style="font-size:.85rem;font-weight:600;color:var(--mint);font-family:var(--mono)">${parseFloat(i.total||0).toFixed(2)}</p></div>`).join(''):'<p style="color:var(--muted);text-align:center;padding:20px">No invoices yet</p>';}
+const rec=S.invoices.slice(0,8);$('d-recent').innerHTML=rec.length?rec.map(i=>`<div class="cart-row" style="cursor:pointer" onclick="viewInv('${i.id}')"><div><p style="font-size:.8rem;font-weight:600;font-family:var(--mono);color:var(--gold)">${i.invoiceNumber||i.id}</p><p style="font-size:.7rem;color:var(--muted)">${i.customer?.customerName||i.customer?.customer_name||i.customerName||'-'}</p></div><p style="font-size:.85rem;font-weight:600;color:var(--mint);font-family:var(--mono)">${fmtMoney(i.total)}</p></div>`).join(''):'<p style="color:var(--muted);text-align:center;padding:20px">No invoices yet</p>';
+// Chart
+const days=[];for(let i=6;i>=0;i--){const d=daysAgo(i);const ds=d.toDateString();const dr=S.invoices.filter(iv=>new Date(iv.createdAt||iv.created_at||iv.date||0).toDateString()===ds).reduce((s,iv)=>s+parseFloat(iv.total||0),0);days.push({d:d.toLocaleDateString('en-GB',{weekday:'short'}),v:dr});}
+const mx=Math.max(...days.map(d=>d.v),1);$('d-chart').innerHTML=days.map(d=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;background:linear-gradient(to top,var(--gold),var(--mint));border-radius:6px 6px 0 0;height:${Math.max((d.v/mx)*100,4)}px;transition:height .5s"></div><span style="font-size:.6rem;color:var(--muted)">${d.d}</span><span style="font-size:.6rem;font-family:var(--mono);color:var(--txt)">${d.v>0?Math.round(d.v):''}</span></div>`).join('');}
 
 // Services
 async function loadSvc(){try{const r=await api('/services');S.services=r.data||r||[];}catch{}renderSvcTbl();}
-function renderSvcTbl(){$('svc-tb').innerHTML=S.services.length?S.services.map(s=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${s.itemCode||s.item_code||'-'}</td><td>${s.icon||''} ${s.name}</td><td><span class="badge badge-info">${s.category}</span></td><td>${s.center}</td><td style="font-family:var(--mono);font-weight:600">${parseFloat(s.basePrice||s.base_price||0).toFixed(2)}</td><td>${s.vatApplicable!==false?'✅':'❌'}</td><td><span class="badge ${s.status==='active'?'badge-success':'badge-danger'}">${s.status}</span></td><td><button onclick="editSvc('${s.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No services</td></tr>';}
-function editSvc(id){const s=S.services.find(x=>x.id===id);if(!s)return;$('sm-id').value=id;$('sm-code').value=s.itemCode||s.item_code||'';$('sm-name').value=s.name||'';$('sm-cat').value=s.category||'';$('sm-cen').value=s.center||'';$('sm-price').value=s.basePrice||s.base_price||0;$('sm-icon').value=s.icon||'';showM('sm');}
-async function saveSvc(){const id=$('sm-id').value;const b={itemCode:$('sm-code').value,name:$('sm-name').value,category:$('sm-cat').value,center:$('sm-cen').value,basePrice:parseFloat($('sm-price').value),icon:$('sm-icon').value,vatApplicable:true};if(!b.name||!b.itemCode){toast('Name and Code required','error');return;}try{if(id)await api('/services/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/services',{method:'POST',body:JSON.stringify(b)});hideM('sm');$('sm-id').value='';toast('Service saved!','success');await loadSvc();}catch(e){toast(e.message,'error');}}
+function renderSvcTbl(){$('svc-tb').innerHTML=S.services.length?S.services.map(s=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${s.itemCode||s.item_code||'-'}</td><td>${s.icon||''} ${s.name}</td><td><span class="badge badge-info">${s.category}</span></td><td>${s.center}</td><td style="font-family:var(--mono);font-weight:600">${fmtMoney(s.basePrice||s.base_price)}</td><td>${s.vatApplicable!==false?'✅':'❌'}</td><td><span class="badge ${s.status==='active'?'badge-success':'badge-danger'}">${s.status}</span></td><td><button onclick="editSvc('${s.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No services</td></tr>';}
+function editSvc(id){const s=S.services.find(x=>x.id===id);if(!s)return;$('sm-id').value=id;$('sm-code').value=s.itemCode||s.item_code||'';$('sm-name').value=s.name||'';$('sm-cat').value=s.category||'Utilities';$('sm-cen').value=s.center||'Abu Dhabi';$('sm-price').value=s.basePrice||s.base_price||0;$('sm-icon').value=s.icon||'';showM('sm');}
+async function saveSvc(){const id=$('sm-id').value;const b={itemCode:$('sm-code').value,name:$('sm-name').value,category:$('sm-cat').value,center:$('sm-cen').value,basePrice:parseFloat($('sm-price').value),icon:$('sm-icon').value,vatApplicable:true};if(!b.name||!b.itemCode){toast('Name and Code required','error');return;}try{if(id)await api('/services/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/services',{method:'POST',body:JSON.stringify(b)});hideM('sm');$('sm-id').value='';toast('Service saved!','success');await loadSvc();addNotif('Service '+(id?'updated':'created')+': '+b.name);}catch(e){toast(e.message,'error');}}
 
 // POS
-function renderPOS(){const cf=$('pos-cf').value,sf=($('pos-sf')?.value||'').toLowerCase();let f=S.services.filter(s=>s.status==='active');if(cf!=='all')f=f.filter(s=>s.center===cf);if(sf)f=f.filter(s=>(s.name||'').toLowerCase().includes(sf)||(s.itemCode||s.item_code||'').toLowerCase().includes(sf)||(s.category||'').toLowerCase().includes(sf));
+function renderPOS(){const cf=$('pos-cf')?.value||'all',sf=($('pos-sf')?.value||'').toLowerCase();let f=S.services.filter(s=>s.status==='active');if(cf!=='all')f=f.filter(s=>s.center===cf);if(sf)f=f.filter(s=>(s.name||'').toLowerCase().includes(sf)||(s.itemCode||s.item_code||'').toLowerCase().includes(sf)||(s.category||'').toLowerCase().includes(sf));
 const g={};f.forEach(s=>{(g[s.category]=g[s.category]||[]).push(s);});
-let h='';for(const[c,items]of Object.entries(g)){h+=`<div style="margin-bottom:20px"><p style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;margin-bottom:10px">${c}</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">${items.map(s=>`<div class="pos-item" onclick="addCart('${s.id}')"><div style="font-size:2rem;margin-bottom:8px">${s.icon||'📦'}</div><div style="font-size:.75rem;font-weight:600;line-height:1.3">${s.name}</div><div style="font-size:.7rem;color:var(--mint);font-weight:700;margin-top:6px;font-family:var(--mono)">${parseFloat(s.basePrice||s.base_price||0).toFixed(2)} ${S.sets.currency}</div></div>`).join('')}</div></div>`;}
-$('pos-grid').innerHTML=h||'<p style="color:var(--muted);text-align:center;padding:30px">No services found</p>';}
+let h='';for(const[c,items]of Object.entries(g)){h+=`<div style="margin-bottom:20px"><p style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;margin-bottom:10px">${c}</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">${items.map(s=>`<div class="pos-item" onclick="addCart('${s.id}')"><div style="font-size:2rem;margin-bottom:8px">${s.icon||'📦'}</div><div style="font-size:.75rem;font-weight:600;line-height:1.3">${s.name}</div><div style="font-size:.7rem;color:var(--mint);font-weight:700;margin-top:6px;font-family:var(--mono)">${fmtMoney(s.basePrice||s.base_price)}</div></div>`).join('')}</div></div>`;}
+$('pos-grid').innerHTML=h||'<p style="color:var(--muted);text-align:center;padding:30px">No services found</p>';
+// Show/hide discount
+const dr=$('disc-row'),cdr=$('c-disc-row');
+if(S.sets.discountEnabled&&maxDisc()>0){dr.style.display='flex';cdr.style.display='flex';}else{dr.style.display='none';cdr.style.display='none';if($('pos-disc'))$('pos-disc').value=0;}
+$('vat-lbl').textContent=S.sets.vat||5;}
 
 function addCart(sid){const s=S.services.find(x=>x.id===sid);if(!s)return;const ex=S.cart.find(c=>c.sid===sid);if(ex)ex.qty++;else S.cart.push({sid,name:s.name,price:parseFloat(s.basePrice||s.base_price||0),icon:s.icon||'📦',code:s.itemCode||s.item_code,center:s.center,qty:1});updateCartUI();toast(s.name+' added','success');}
 function rmCart(i){S.cart.splice(i,1);updateCartUI();}
 function chgQty(i,d){S.cart[i].qty=Math.max(1,S.cart[i].qty+d);updateCartUI();}
-function clearCart(){if(!S.cart.length)return;if(!confirm('Clear cart?'))return;S.cart=[];updateCartUI();}
-function updateCartUI(){$('pos-cart').innerHTML=S.cart.length?S.cart.map((c,i)=>`<div class="cart-row"><div style="flex:1"><p style="font-size:.8rem;font-weight:600">${c.icon} ${c.name}</p><p style="font-size:.65rem;color:var(--muted)">${c.code} • ${c.center}</p></div><div style="display:flex;align-items:center;gap:10px"><div class="qty-ctrl"><button onclick="chgQty(${i},-1)">−</button><span>${c.qty}</span><button onclick="chgQty(${i},1)">+</button></div><p style="font-size:.8rem;font-weight:600;color:var(--mint);font-family:var(--mono);width:80px;text-align:right">${(c.price*c.qty).toFixed(2)}</p><button onclick="rmCart(${i})" style="color:var(--danger);background:none;border:none;cursor:pointer;font-size:.8rem">✕</button></div></div>`).join(''):'<p style="color:var(--dim);text-align:center;padding:30px;font-size:.8rem">Cart is empty</p>';updateTotals();}
-function updateTotals(){const sub=S.cart.reduce((s,c)=>s+c.price*c.qty,0);const dp=Math.min(parseFloat($('pos-disc')?.value||0),maxDisc());const da=sub*dp/100;const af=sub-da;const vt=af*(S.sets.vat/100);const tot=af+vt;$('c-sub').textContent=sub.toFixed(2)+' '+S.sets.currency;$('c-disc').textContent='-'+da.toFixed(2)+' '+S.sets.currency;$('c-vat').textContent=vt.toFixed(2)+' '+S.sets.currency;$('c-total').textContent=tot.toFixed(2)+' '+S.sets.currency;}
-
+function clearCart(){if(!S.cart.length)return;S.cart=[];updateCartUI();}
+function updateCartUI(){$('pos-cart').innerHTML=S.cart.length?S.cart.map((c,i)=>`<div class="cart-row"><div style="flex:1;min-width:0"><p style="font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.icon} ${c.name}</p><p style="font-size:.65rem;color:var(--muted)">${c.code} • ${c.center}</p></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><div class="qty-ctrl"><button onclick="chgQty(${i},-1)">−</button><span>${c.qty}</span><button onclick="chgQty(${i},1)">+</button></div><p style="font-size:.8rem;font-weight:600;color:var(--mint);font-family:var(--mono);width:72px;text-align:right">${(c.price*c.qty).toFixed(2)}</p><button onclick="rmCart(${i})" style="color:var(--danger);background:none;border:none;cursor:pointer;font-size:.8rem">✕</button></div></div>`).join(''):'<p style="color:var(--dim);text-align:center;padding:30px;font-size:.8rem">Cart is empty</p>';updateTotals();}
+function updateTotals(){const sub=S.cart.reduce((s,c)=>s+c.price*c.qty,0);const dp=S.sets.discountEnabled?Math.min(parseFloat($('pos-disc')?.value||0),maxDisc()):0;const da=sub*dp/100;const af=sub-da;const vt=af*((S.sets.vat||5)/100);const tot=af+vt;$('c-sub').textContent=fmtMoney(sub);$('c-disc').textContent='-'+fmtMoney(da);$('c-vat').textContent=fmtMoney(vt);$('c-total').textContent=fmtMoney(tot);}
+</script>
+<script>
 // POS Customer
 function searchPC(t){if(t.length<2){$('pos-cr').innerHTML='';return;}const tl=t.toLowerCase();const m=S.customers.filter(c=>(c.customerName||c.customer_name||'').toLowerCase().includes(tl)||(c.mobile||'').includes(tl)||(c.email||'').toLowerCase().includes(tl));
 $('pos-cr').innerHTML=m.slice(0,5).map(c=>`<div onclick="selPC('${c.id}')" style="padding:8px;cursor:pointer;border-radius:var(--radsm);transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'"><p style="font-weight:600;font-size:.8rem">${c.customerName||c.customer_name}</p><p style="font-size:.7rem;color:var(--muted)">${c.mobile||''} • ${c.email||''}</p></div>`).join('')||'<p style="font-size:.75rem;color:var(--muted);padding:8px">No matches</p>';}
 function selPC(id){const c=S.customers.find(x=>x.id===id);if(!c)return;S.selCust=c;$('pos-cn').textContent=c.customerName||c.customer_name;$('pos-cd').textContent=(c.mobile||'')+(c.email?' • '+c.email:'');$('pos-csel').style.display='block';$('pos-cr').innerHTML='';$('pos-cs').value='';}
-function clearPC(){S.selCust=null;$('pos-csel').style.display='none';}
+function clearPC(){S.selCust=null;$('pos-csel').style.display='none';$('pos-cs').value='';}
+function openNewCustModal(){$('cm-id').value='';$('cm-name').value='';$('cm-type').value='individual';$('cm-phone').value='';$('cm-email').value='';$('cm-company').value='';$('cm-taxid').value='';$('cm-lic').value='';$('cm-licexp').value='';$('cm-addr').value='';showM('cm');}
 
 // Process Payment
 async function processPayment(){if(!S.cart.length){toast('Cart is empty','error');return;}if(!S.selCust){toast('Select a customer first','warning');return;}
-const sub=S.cart.reduce((s,c)=>s+c.price*c.qty,0);const dp=Math.min(parseFloat($('pos-disc')?.value||0),maxDisc());const da=sub*dp/100;const af=sub-da;const vt=af*(S.sets.vat/100);const tot=af+vt;
-const inv={customerId:S.selCust.id,items:S.cart.map(c=>({serviceId:c.sid,itemCode:c.code,name:c.name,quantity:c.qty,unitPrice:c.price,totalPrice:c.price*c.qty})),subtotal:sub,vatRate:S.sets.vat,vatAmount:vt,discount:da,total:tot,paymentMethod:$('pos-pay').value};
-showL('Processing...');try{const r=await api('/invoices',{method:'POST',body:JSON.stringify(inv)});const iv=r.data||r;S.invoices.unshift(iv);S.cart=[];S.selCust=null;$('pos-csel').style.display='none';$('pos-disc').value=0;updateCartUI();toast('Invoice created!','success');viewInv(iv.id);}catch(e){if(e.message.includes('Network')){const oi={...inv,id:'OFF-'+Date.now(),invoiceNumber:'OFF-'+Date.now(),createdAt:new Date().toISOString(),status:'pending',customerName:S.selCust.customerName||S.selCust.customer_name};S.invoices.unshift(oi);S.offQ.push({p:'/invoices',o:{method:'POST',body:JSON.stringify(inv)}});localStorage.setItem('gserp_oq',JSON.stringify(S.offQ));S.cart=[];S.selCust=null;$('pos-csel').style.display='none';updateCartUI();toast('Saved offline','warning');}else toast(e.message,'error');}hideL();}
+const sub=S.cart.reduce((s,c)=>s+c.price*c.qty,0);const dp=S.sets.discountEnabled?Math.min(parseFloat($('pos-disc')?.value||0),maxDisc()):0;const da=sub*dp/100;const af=sub-da;const vt=af*((S.sets.vat||5)/100);const tot=af+vt;
+const inv={customerId:S.selCust.id,items:S.cart.map(c=>({serviceId:c.sid,itemCode:c.code,name:c.name,quantity:c.qty,unitPrice:c.price,totalPrice:c.price*c.qty})),subtotal:sub,vatRate:S.sets.vat||5,vatAmount:vt,discount:da,total:tot,paymentMethod:$('pos-pay').value};
+showL('Processing...');try{const r=await api('/invoices',{method:'POST',body:JSON.stringify(inv)});const iv=r.data||r;iv.customer=S.selCust;S.invoices.unshift(iv);S.cart=[];clearPC();if($('pos-disc'))$('pos-disc').value=0;updateCartUI();toast('Invoice created!','success');addNotif('Invoice '+(iv.invoiceNumber||iv.id)+' created');viewInv(iv.id);}catch(e){if(e.message.includes('Network')||e.message.includes('offline')){const oi={id:'OFF-'+Date.now(),invoiceNumber:'OFF-'+Date.now(),createdAt:new Date().toISOString(),total:tot,subtotal:sub,vatAmount:vt,discount:da,paymentMethod:$('pos-pay').value,customer:S.selCust,items:inv.items,status:'pending_sync'};S.invoices.unshift(oi);S.offQ.push({p:'/invoices',o:{method:'POST',body:JSON.stringify(inv)}});localStorage.setItem('gserp_oq',JSON.stringify(S.offQ));S.cart=[];clearPC();updateCartUI();toast('Saved offline','warning');}else{toast(e.message,'error');}}hideL();}
 
 // Invoices
 async function loadInv(){try{const r=await api('/invoices');S.invoices=r.data||r||[];}catch{}renderInvTbl();}
-function renderInvTbl(){$('inv-tb').innerHTML=S.invoices.length?S.invoices.map(i=>`<tr><td style="font-family:var(--mono);color:var(--gold);font-weight:600">${i.invoiceNumber||i.invoice_number||i.id}</td><td>${i.customer?.customerName||i.customer?.customer_name||i.customerName||'-'}</td><td style="font-size:.8rem;color:var(--muted)">${fmtDate(i.createdAt||i.created_at||i.date)}</td><td style="font-family:var(--mono);font-weight:600;color:var(--mint)">${parseFloat(i.total||0).toFixed(2)} ${S.sets.currency}</td><td><span class="badge badge-gold">${i.paymentMethod||i.payment_method||'-'}</span></td><td><span class="badge ${(i.paymentStatus||i.status)==='paid'?'badge-success':'badge-info'}">${i.paymentStatus||i.status||'paid'}</span></td><td><button onclick="viewInv('${i.id}')" class="btn btn-gold btn-sm">View</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No invoices</td></tr>';}
+function renderInvTbl(){const isAdmin=['super_admin','admin'].includes(S.user?.role);
+$('inv-tb').innerHTML=S.invoices.length?S.invoices.map(i=>{const cn=i.customer?.customerName||i.customer?.customer_name||i.customerName||'-';const num=i.invoiceNumber||i.invoice_number||i.id;return`<tr><td style="font-family:var(--mono);color:var(--gold);font-weight:600">${num}</td><td>${cn}</td><td style="font-size:.8rem;color:var(--muted)">${fmtDate(i.createdAt||i.created_at||i.date)}</td><td style="font-family:var(--mono);font-weight:600;color:var(--mint)">${fmtMoney(i.total)}</td><td><span class="badge badge-gold">${i.paymentMethod||i.payment_method||'-'}</span></td><td><span class="badge ${(i.paymentStatus||i.status)==='paid'?'badge-success':'badge-warn'}">${i.paymentStatus||i.status||'paid'}</span></td><td style="white-space:nowrap"><button onclick="viewInv('${i.id}')" class="btn btn-gold btn-sm">View</button> ${isAdmin?`<button onclick="askDeleteInv('${i.id}')" class="btn btn-danger btn-sm">🗑</button>`:''}</td></tr>`;}).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No invoices</td></tr>';}
 
-function viewInv(id){const i=S.invoices.find(x=>x.id===id);if(!i)return;
-const items=i.items||i.invoiceItems||[];
-$('iv-preview').innerHTML=`<div class="invoice-print">
-<div style="display:flex;justify-content:space-between;align-items:start;border-bottom:2px solid #e5e7eb;padding-bottom:24px;margin-bottom:24px">
-<div><h1 style="font-size:1.5rem;font-weight:800;color:#0a192f;margin-bottom:4px">GOVERNMENT SERVICES</h1><p style="font-size:.8rem;color:#6b7280">United Arab Emirates</p><p style="font-size:.8rem;color:#6b7280">TRN: 100123456700003</p></div>
-<div style="text-align:right"><div style="width:48px;height:48px;background:#d4af37;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-bottom:8px"><span style="font-size:1.2rem;font-weight:800;color:#0a192f">GS</span></div><p style="font-size:.7rem;color:#9ca3af">GSERP PRO</p></div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
-<div><p style="font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Invoice Details</p>
-<p style="font-size:.85rem;margin-bottom:4px"><strong>Invoice #:</strong> ${i.invoiceNumber||i.id}</p>
-<p style="font-size:.85rem;margin-bottom:4px"><strong>Date:</strong> ${fmtDate(i.createdAt||i.created_at||i.date)}</p>
-<p style="font-size:.85rem;margin-bottom:4px"><strong>Payment:</strong> ${(i.paymentMethod||i.payment_method||'').toUpperCase()}</p></div>
-<div><p style="font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Customer</p>
-<p style="font-size:.85rem;margin-bottom:4px"><strong>Name:</strong> ${i.customer?.customerName||i.customer?.customer_name||i.customerName||'-'}</p>
-<p style="font-size:.85rem;margin-bottom:4px"><strong>Phone:</strong> ${i.customer?.mobile||'-'}</p>
-<p style="font-size:.85rem"><strong>Email:</strong> ${i.customer?.email||'-'}</p></div></div>
-<table><thead><tr><th>#</th><th>Service</th><th>Code</th><th>Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead>
-<tbody>${items.map((it,idx)=>`<tr><td>${idx+1}</td><td>${it.name}</td><td>${it.itemCode||it.item_code||'-'}</td><td>${it.quantity||1}</td><td style="text-align:right">${parseFloat(it.unitPrice||it.unit_price||0).toFixed(2)}</td><td style="text-align:right;font-weight:600">${parseFloat(it.totalPrice||it.total_price||0).toFixed(2)}</td></tr>`).join('')}</tbody></table>
-<div style="display:flex;justify-content:flex-end;margin-top:16px"><div style="width:240px">
-<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">Subtotal:</span><span style="font-weight:600">${parseFloat(i.subtotal||0).toFixed(2)} ${S.sets.currency}</span></div>
-${parseFloat(i.discount||0)>0?`<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">Discount:</span><span style="font-weight:600;color:#ef4444">-${parseFloat(i.discount||0).toFixed(2)} ${S.sets.currency}</span></div>`:''}
-<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">VAT (${i.vatRate||S.sets.vat}%):</span><span style="font-weight:600">${parseFloat(i.vatAmount||i.vat_amount||0).toFixed(2)} ${S.sets.currency}</span></div>
-<div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:700;border-top:2px solid #d1d5db;padding-top:8px"><span>Total:</span><span style="color:#d4af37">${parseFloat(i.total||0).toFixed(2)} ${S.sets.currency}</span></div></div></div>
-<div style="border-top:2px solid #e5e7eb;padding-top:16px;margin-top:24px;text-align:center"><p style="font-size:.75rem;color:#9ca3af">Thank you for using Government Services ERP</p><p style="font-size:.7rem;color:#9ca3af;margin-top:4px">Computer-generated invoice - no signature required</p></div></div>`;
-showM('ivm');}
+function viewInv(id){const i=S.invoices.find(x=>x.id===id);if(!i)return;const items=i.items||i.invoiceItems||[];const cn=i.customer?.customerName||i.customer?.customer_name||i.customerName||'-';
+$('iv-preview').innerHTML=`<div class="invoice-print"><div style="display:flex;justify-content:space-between;align-items:start;border-bottom:2px solid #e5e7eb;padding-bottom:24px;margin-bottom:24px"><div><h1 style="font-size:1.5rem;font-weight:800;color:#0a192f;margin-bottom:4px">${S.sets.company||'GOVERNMENT SERVICES'}</h1><p style="font-size:.8rem;color:#6b7280">United Arab Emirates</p><p style="font-size:.8rem;color:#6b7280">TRN: 100123456700003</p></div><div style="text-align:right"><div style="width:48px;height:48px;background:#d4af37;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-bottom:8px"><span style="font-size:1.2rem;font-weight:800;color:#0a192f">GS</span></div><p style="font-size:.7rem;color:#9ca3af">GSERP v${VER}</p></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px"><div><p style="font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Invoice Details</p><p style="font-size:.85rem;margin-bottom:4px"><strong>Invoice #:</strong> ${i.invoiceNumber||i.id}</p><p style="font-size:.85rem;margin-bottom:4px"><strong>Date:</strong> ${fmtDate(i.createdAt||i.created_at||i.date)}</p><p style="font-size:.85rem"><strong>Payment:</strong> ${(i.paymentMethod||i.payment_method||'').toUpperCase()}</p></div><div><p style="font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Customer</p><p style="font-size:.85rem;margin-bottom:4px"><strong>Name:</strong> ${cn}</p><p style="font-size:.85rem;margin-bottom:4px"><strong>Phone:</strong> ${i.customer?.mobile||'-'}</p><p style="font-size:.85rem"><strong>Email:</strong> ${i.customer?.email||'-'}</p></div></div>
+<table><thead><tr><th>#</th><th>Service</th><th>Code</th><th>Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead><tbody>${items.map((it,idx)=>`<tr><td>${idx+1}</td><td>${it.name}</td><td>${it.itemCode||it.item_code||'-'}</td><td>${it.quantity||1}</td><td style="text-align:right">${parseFloat(it.unitPrice||it.unit_price||0).toFixed(2)}</td><td style="text-align:right;font-weight:600">${parseFloat(it.totalPrice||it.total_price||0).toFixed(2)}</td></tr>`).join('')}</tbody></table>
+<div style="display:flex;justify-content:flex-end;margin-top:16px"><div style="width:240px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">Subtotal:</span><span style="font-weight:600">${fmtMoney(i.subtotal)}</span></div>${parseFloat(i.discount||0)>0?`<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">Discount:</span><span style="font-weight:600;color:#ef4444">-${fmtMoney(i.discount)}</span></div>`:''}<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px"><span style="color:#6b7280">VAT (${i.vatRate||S.sets.vat||5}%):</span><span style="font-weight:600">${fmtMoney(i.vatAmount||i.vat_amount)}</span></div><div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:700;border-top:2px solid #d1d5db;padding-top:8px"><span>Total:</span><span style="color:#d4af37">${fmtMoney(i.total)}</span></div></div></div>
+<div style="border-top:2px solid #e5e7eb;padding-top:16px;margin-top:24px;text-align:center"><p style="font-size:.75rem;color:#9ca3af">Thank you for using ${S.sets.company||'Government Services'} ERP</p><p style="font-size:.7rem;color:#9ca3af;margin-top:4px">Computer-generated invoice — no signature required</p></div></div>`;showM('ivm');}
+
+// Delete Invoice
+function askDeleteInv(id){const i=S.invoices.find(x=>x.id===id);if(!i)return;$('dim-id').value=id;$('dim-inv').textContent=i.invoiceNumber||i.id;$('dim-reason').value='';showM('dim');}
+function confirmDeleteInv(){const id=$('dim-id').value;const reason=$('dim-reason').value.trim();if(!reason){toast('Please enter a reason','error');return;}const i=S.invoices.find(x=>x.id===id);if(!i)return;S.deletedInvoices.unshift({...i,deletedBy:S.user?.username,deleteReason:reason,deletedAt:new Date().toISOString()});localStorage.setItem('gserp_del',JSON.stringify(S.deletedInvoices));S.invoices=S.invoices.filter(x=>x.id!==id);hideM('dim');renderInvTbl();toast('Invoice archived','success');addNotif('Invoice '+(i.invoiceNumber||i.id)+' deleted: '+reason,'warning');}
+function loadDeleted(){$('del-tb').innerHTML=S.deletedInvoices.length?S.deletedInvoices.map(i=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${i.invoiceNumber||i.id}</td><td>${i.customer?.customerName||i.customerName||'-'}</td><td style="font-family:var(--mono);color:var(--mint)">${fmtMoney(i.total)}</td><td>${i.deletedBy||'-'}</td><td style="max-width:200px;font-size:.8rem;color:var(--muted)">${i.deleteReason||'-'}</td><td style="font-size:.8rem;color:var(--muted)">${fmtDate(i.deletedAt)}</td><td><button onclick="restoreInv('${i.id}')" class="btn btn-mint btn-sm">Restore</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No deleted invoices</td></tr>';}
+function restoreInv(id){const i=S.deletedInvoices.find(x=>x.id===id);if(!i)return;delete i.deletedBy;delete i.deleteReason;delete i.deletedAt;S.invoices.unshift(i);S.deletedInvoices=S.deletedInvoices.filter(x=>x.id!==id);localStorage.setItem('gserp_del',JSON.stringify(S.deletedInvoices));loadDeleted();toast('Invoice restored','success');addNotif('Invoice '+(i.invoiceNumber||i.id)+' restored');}
 
 // Customers
 async function loadCust(){try{const r=await api('/customers');S.customers=r.data||r||[];}catch{}renderCustTbl();}
 function renderCustTbl(){const s=($('cust-s')?.value||'').toLowerCase();let f=S.customers;if(s)f=f.filter(c=>(c.customerName||c.customer_name||'').toLowerCase().includes(s)||(c.mobile||'').includes(s)||(c.email||'').toLowerCase().includes(s));
 $('cust-tb').innerHTML=f.length?f.map(c=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${c.customerCode||c.customer_code||'-'}</td><td style="font-weight:600">${c.customerName||c.customer_name}</td><td><span class="badge badge-info">${c.customerType||c.customer_type||'-'}</span></td><td>${c.mobile||'-'}</td><td style="color:var(--muted)">${c.email||'-'}</td><td><span class="badge ${c.status==='active'?'badge-success':'badge-danger'}">${c.status||'active'}</span></td><td><button onclick="editCust('${c.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No customers</td></tr>';}
-
-function editCust(id){const c=S.customers.find(x=>x.id===id);if(!c)return;$('cm-id').value=id;$('cm-name').value=c.customerName||c.customer_name||'';$('cm-type').value=c.customerType||c.customer_type||'individual';$('cm-phone').value=c.mobile||'';$('cm-email').value=c.email||'';$('cm-taxid').value=c.taxId||c.tax_id||'';$('cm-lic').value=c.tradeLicense||c.trade_license||'';$('cm-addr').value=c.address||'';showM('cm');}
-async function saveCust(){const id=$('cm-id').value;const b={customerName:$('cm-name').value,customerType:$('cm-type').value,mobile:$('cm-phone').value,email:$('cm-email').value,taxId:$('cm-taxid').value,tradeLicense:$('cm-lic').value,address:$('cm-addr').value};if(!b.customerName||!b.mobile){toast('Name and Phone required','error');return;}try{if(id)await api('/customers/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/customers',{method:'POST',body:JSON.stringify(b)});hideM('cm');$('cm-id').value='';toast('Customer saved!','success');await loadCust();}catch(e){toast(e.message,'error');}}
-
+function editCust(id){const c=S.customers.find(x=>x.id===id);if(!c)return;$('cm-id').value=id;$('cm-name').value=c.customerName||c.customer_name||'';$('cm-type').value=c.customerType||c.customer_type||'individual';$('cm-phone').value=c.mobile||'';$('cm-email').value=c.email||'';$('cm-company').value=c.companyName||c.company_name||'';$('cm-taxid').value=c.taxId||c.tax_id||'';$('cm-lic').value=c.tradeLicense||c.trade_license||'';$('cm-licexp').value=c.licenseExpiry||c.license_expiry||'';$('cm-addr').value=c.address||'';showM('cm');}
+async function saveCust(){const id=$('cm-id').value;const b={customerName:$('cm-name').value,customerType:$('cm-type').value,mobile:$('cm-phone').value,email:$('cm-email').value,companyName:$('cm-company').value,taxId:$('cm-taxid').value,tradeLicense:$('cm-lic').value,licenseExpiry:$('cm-licexp').value||null,address:$('cm-addr').value};if(!b.customerName||!b.mobile){toast('Name and Phone required','error');return;}try{if(id)await api('/customers/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/customers',{method:'POST',body:JSON.stringify(b)});hideM('cm');toast('Customer saved!','success');addNotif('Customer '+(id?'updated':'added')+': '+b.customerName);await loadCust();}catch(e){toast(e.message,'error');}}
+</script>
+<script>
 // Users
 async function loadUsr(){try{const r=await api('/users');S.users=r.data||r||[];}catch{}renderUsrTbl();}
 function renderUsrTbl(){$('usr-tb').innerHTML=S.users.length?S.users.map(u=>`<tr><td style="font-weight:600">${u.username}</td><td>${u.full_name||u.fullName||'-'}</td><td style="color:var(--muted)">${u.email||'-'}</td><td><span class="badge badge-gold">${(u.role||'').replace(/_/g,' ')}</span></td><td><span class="badge ${u.status==='active'?'badge-success':'badge-danger'}">${u.status||'active'}</span></td><td style="font-size:.75rem;color:var(--muted)">${u.lastLogin||u.last_login?fmtDate(u.lastLogin||u.last_login):'Never'}</td><td><button onclick="editUsr('${u.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No users</td></tr>';}
-
 function editUsr(id){const u=S.users.find(x=>x.id===id);if(!u)return;$('um-id').value=id;$('um-user').value=u.username||'';$('um-name').value=u.full_name||u.fullName||'';$('um-email').value=u.email||'';$('um-phone').value=u.mobile||'';$('um-pass').value='';$('um-role').value=u.role||'cashier';$('um-gender').value=u.gender||'male';showM('um');}
-async function saveUsr(){const id=$('um-id').value;const b={username:$('um-user').value,fullName:$('um-name').value,email:$('um-email').value,mobile:$('um-phone').value,role:$('um-role').value,gender:$('um-gender').value};const pw=$('um-pass').value;if(pw)b.password=pw;if(!b.username||!b.email){toast('Username and Email required','error');return;}if(!id&&!pw){toast('Password required for new user','error');return;}try{if(id)await api('/users/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/users',{method:'POST',body:JSON.stringify(b)});hideM('um');$('um-id').value='';toast('User saved!','success');await loadUsr();}catch(e){toast(e.message,'error');}}
+async function saveUsr(){const id=$('um-id').value;const b={username:$('um-user').value,fullName:$('um-name').value,email:$('um-email').value,mobile:$('um-phone').value,role:$('um-role').value,gender:$('um-gender').value};const pw=$('um-pass').value;if(pw)b.password=pw;if(!b.username||!b.email){toast('Username and Email required','error');return;}if(!id&&!pw){toast('Password required for new user','error');return;}try{if(id)await api('/users/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/users',{method:'POST',body:JSON.stringify(b)});hideM('um');$('um-id').value='';toast('User saved!','success');addNotif('User '+(id?'updated':'created')+': '+b.username);await loadUsr();}catch(e){toast(e.message,'error');}}
 
 // Branches
-async function loadBr(){try{const r=await api('/branches');S.branches=r.data||r||[];}catch{}renderBrTbl();populateBranchDD();}
+async function loadBr(){try{const r=await api('/branches');S.branches=r.data||r||[];}catch{}renderBrTbl();populateBranchDD();checkBranchLimit();}
 function renderBrTbl(){$('br-tb').innerHTML=S.branches.length?S.branches.map(b=>`<tr><td style="font-family:var(--mono);color:var(--gold)">${b.code}</td><td style="font-weight:600">${b.name}</td><td>${b.city||'-'}</td><td>${b.phone||'-'}</td><td style="color:var(--muted)">${b.email||'-'}</td><td><span class="badge ${b.status==='active'?'badge-success':'badge-danger'}">${b.status||'active'}</span></td><td><button onclick="editBr('${b.id}')" class="btn btn-ghost btn-sm">Edit</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No branches</td></tr>';}
 function populateBranchDD(){const dd=$('um-branch');if(!dd)return;dd.innerHTML='<option value="">Select...</option>'+S.branches.map(b=>`<option value="${b.id}">${b.name}</option>`).join('');}
-
+function checkBranchLimit(){const btn=$('add-br-btn');if(!btn)return;if(!S.sets.branchCreateEnabled){btn.disabled=true;btn.title='Branch creation disabled by admin';}else{btn.disabled=false;btn.title='';}}
 function editBr(id){const b=S.branches.find(x=>x.id===id);if(!b)return;$('bm-id').value=id;$('bm-code').value=b.code||'';$('bm-name').value=b.name||'';$('bm-city').value=b.city||'';$('bm-emirate').value=b.emirate||'';$('bm-phone').value=b.phone||'';$('bm-email').value=b.email||'';$('bm-addr').value=b.address||'';showM('bm');}
-async function saveBr(){const id=$('bm-id').value;const b={code:$('bm-code').value,name:$('bm-name').value,city:$('bm-city').value,emirate:$('bm-emirate').value,phone:$('bm-phone').value,email:$('bm-email').value,address:$('bm-addr').value};if(!b.name||!b.code){toast('Name and Code required','error');return;}try{if(id)await api('/branches/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/branches',{method:'POST',body:JSON.stringify(b)});hideM('bm');$('bm-id').value='';toast('Branch saved!','success');await loadBr();}catch(e){toast(e.message,'error');}}
+async function saveBr(){if(!S.sets.branchCreateEnabled&&!$('bm-id').value){toast('Branch creation disabled','error');return;}const id=$('bm-id').value;const b={code:$('bm-code').value,name:$('bm-name').value,city:$('bm-city').value,emirate:$('bm-emirate').value,phone:$('bm-phone').value,email:$('bm-email').value,address:$('bm-addr').value};if(!b.name||!b.code){toast('Name and Code required','error');return;}try{if(id)await api('/branches/'+id,{method:'PUT',body:JSON.stringify(b)});else await api('/branches',{method:'POST',body:JSON.stringify(b)});hideM('bm');$('bm-id').value='';toast('Branch saved!','success');await loadBr();}catch(e){toast(e.message,'error');}}
 
 // HR
-async function loadHR(){try{const r=await api('/attendance');const d=r.data||r||[];$('hr-tb').innerHTML=d.length?d.map(a=>`<tr><td style="font-weight:600">${a.user?.username||a.username||'-'}</td><td>${a.date?new Date(a.date).toLocaleDateString():'-'}</td><td style="color:var(--success)">${a.checkInTime||a.check_in_time?new Date(a.checkInTime||a.check_in_time).toLocaleTimeString():'-'}</td><td style="color:var(--danger)">${a.checkOutTime||a.check_out_time?new Date(a.checkOutTime||a.check_out_time).toLocaleTimeString():'-'}</td><td style="font-family:var(--mono)">${a.hoursWorked||a.hours_worked||'-'}</td><td><span class="badge ${a.status==='present'?'badge-success':a.status==='late'?'badge-info':'badge-danger'}">${a.status||'-'}</span></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">No attendance records</td></tr>';}catch{$('hr-tb').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">Unable to load attendance</td></tr>';}}
+async function loadHR(){if(!$('hr-date').value)$('hr-date').value=new Date().toISOString().split('T')[0];try{const r=await api('/attendance');const d=r.data||r||[];let p=0,a=0,l=0,th=0,tc=0;d.forEach(x=>{if(x.status==='present'){p++;if(x.hoursWorked||x.hours_worked){th+=parseFloat(x.hoursWorked||x.hours_worked);tc++;}}else if(x.status==='late'){l++;if(x.hoursWorked||x.hours_worked){th+=parseFloat(x.hoursWorked||x.hours_worked);tc++;}}else a++;});
+$('hr-p').textContent=p;$('hr-a').textContent=a;$('hr-l').textContent=l;$('hr-avg').textContent=tc>0?(th/tc).toFixed(1):'0';
+$('hr-tb').innerHTML=d.length?d.map(x=>`<tr><td style="font-weight:600">${x.user?.username||x.user?.full_name||'-'}</td><td><span class="badge badge-info">${x.user?.role||'-'}</span></td><td>${x.date?new Date(x.date).toLocaleDateString('en-GB'):'-'}</td><td style="color:var(--success)">${x.checkInTime||x.check_in_time?new Date(x.checkInTime||x.check_in_time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'-'}</td><td style="color:var(--danger)">${x.checkOutTime||x.check_out_time?new Date(x.checkOutTime||x.check_out_time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'-'}</td><td style="font-family:var(--mono)">${x.hoursWorked||x.hours_worked||'-'}</td><td><span class="badge ${x.status==='present'?'badge-success':x.status==='late'?'badge-warn':'badge-danger'}">${x.status||'-'}</span></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No attendance records</td></tr>';}catch{}}
+async function doCheckIn(){showL('Checking in...');try{await api('/attendance/checkin',{method:'POST',body:JSON.stringify({})});toast('Checked in!','success');addNotif(S.user?.username+' checked in');loadHR();}catch(e){toast(e.message,'error');}hideL();}
+async function doCheckOut(){showL('Checking out...');try{await api('/attendance/checkout',{method:'POST',body:JSON.stringify({})});toast('Checked out!','success');addNotif(S.user?.username+' checked out');loadHR();}catch(e){toast(e.message,'error');}hideL();}
 
-async function doCheckIn(){showL('Checking in...');try{await api('/attendance/checkin',{method:'POST',body:JSON.stringify({})});toast('Checked in!','success');loadHR();}catch(e){toast(e.message,'error');}hideL();}
-async function doCheckOut(){showL('Checking out...');try{await api('/attendance/checkout',{method:'POST',body:JSON.stringify({})});toast('Checked out!','success');loadHR();}catch(e){toast(e.message,'error');}hideL();}
+// Leave
+function loadLeave(){$('lv-tb').innerHTML=S.leaveRequests.length?S.leaveRequests.map((lv,i)=>`<tr><td style="font-weight:600">${lv.user}</td><td><span class="badge badge-info">${lv.type}</span></td><td>${lv.from}</td><td>${lv.to}</td><td style="font-family:var(--mono)">${lv.days}</td><td style="font-size:.8rem;color:var(--muted);max-width:150px">${lv.reason||'-'}</td><td><span class="badge ${lv.status==='approved'?'badge-success':lv.status==='rejected'?'badge-danger':'badge-warn'}">${lv.status}</span></td><td>${lv.status==='pending'&&['super_admin','admin','supervisor'].includes(S.user?.role)?`<button onclick="approveLv(${i})" class="btn btn-mint btn-sm">✓</button> <button onclick="rejectLv(${i})" class="btn btn-danger btn-sm">✗</button>`:'-'}</td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No leave requests</td></tr>';}
+function submitLeave(){const lv={user:S.user?.full_name||S.user?.username,type:$('lv-type').value,from:$('lv-from').value,to:$('lv-to').value,days:parseInt($('lv-days').value)||1,reason:$('lv-reason').value,status:'pending',createdAt:new Date().toISOString()};if(!lv.from||!lv.to){toast('Select dates','error');return;}S.leaveRequests.unshift(lv);localStorage.setItem('gserp_lv',JSON.stringify(S.leaveRequests));hideM('lvm');toast('Leave request submitted','success');addNotif('Leave request from '+lv.user+' ('+lv.type+')');loadLeave();}
+function approveLv(i){S.leaveRequests[i].status='approved';localStorage.setItem('gserp_lv',JSON.stringify(S.leaveRequests));toast('Leave approved','success');addNotif('Leave approved for '+S.leaveRequests[i].user);loadLeave();}
+function rejectLv(i){S.leaveRequests[i].status='rejected';localStorage.setItem('gserp_lv',JSON.stringify(S.leaveRequests));toast('Leave rejected','info');loadLeave();}
+
+// Login Logs
+function loadLogs(){$('log-tb').innerHTML=S.loginLogs.length?S.loginLogs.slice(0,100).map(l=>`<tr><td style="font-weight:600">${l.user}</td><td><span class="badge badge-gold">${l.role}</span></td><td style="font-size:.8rem;color:var(--muted)">${fmtDate(l.time)}</td><td style="font-family:var(--mono);font-size:.8rem">${l.ip||'--'}</td><td style="font-size:.75rem;color:var(--dim)">${l.device==='Mobile'?'📱 Mobile':'🖥 Desktop'}</td><td><span class="badge ${l.status==='success'?'badge-success':'badge-danger'}">${l.status}</span></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">No login records</td></tr>';}
 
 // Reports
-function genRpt(type){const now=new Date();let from,to=new Date();
-if(type==='yesterday'){from=new Date(now);from.setDate(from.getDate()-1);to=new Date(from);}
-else if(type==='week'){from=new Date(now);from.setDate(from.getDate()-7);}
-else if(type==='month'){from=new Date(now);from.setMonth(from.getMonth()-1);}
-else{from=new Date($('rpt-from').value);to=new Date($('rpt-to').value);if(isNaN(from)){toast('Select date range','error');return;}}
+function genRpt(type){const now=new Date();let from,to=new Date();if(type==='yesterday'){from=daysAgo(1);to=new Date(from);to.setHours(23,59,59);}else if(type==='week'){from=daysAgo(7);}else if(type==='month'){from=daysAgo(30);}else{from=new Date($('rpt-from').value);to=new Date($('rpt-to').value);to.setHours(23,59,59);if(isNaN(from)){toast('Select date range','error');return;}}
 const filtered=S.invoices.filter(i=>{const d=new Date(i.createdAt||i.created_at||i.date||0);return d>=from&&d<=to;});
-const rev=filtered.reduce((s,i)=>s+parseFloat(i.total||0),0);
-const vat=filtered.reduce((s,i)=>s+parseFloat(i.vatAmount||i.vat_amount||0),0);
-const methods={};filtered.forEach(i=>{const m=i.paymentMethod||i.payment_method||'other';methods[m]=(methods[m]||0)+1;});
-$('rpt-out').innerHTML=`<div class="fade-in"><h3 style="font-size:1.1rem;font-weight:700;margin-bottom:20px">📊 Report: ${from.toLocaleDateString()} - ${to.toLocaleDateString()}</h3>
-<div class="grid-4" style="margin-bottom:24px">
-<div class="stat-card"><p class="sl">Total Revenue</p><p class="sv" style="color:var(--gold)">${rev.toFixed(2)}</p></div>
-<div class="stat-card"><p class="sl">Total Invoices</p><p class="sv" style="color:var(--mint)">${filtered.length}</p></div>
-<div class="stat-card"><p class="sl">VAT Collected</p><p class="sv" style="color:var(--info)">${vat.toFixed(2)}</p></div>
-<div class="stat-card"><p class="sl">Avg per Invoice</p><p class="sv" style="color:var(--txt)">${filtered.length?(rev/filtered.length).toFixed(2):'0.00'}</p></div>
-</div>
-<h4 style="font-size:.9rem;font-weight:700;margin-bottom:12px">Payment Methods</h4>
-<div style="display:flex;gap:12px;flex-wrap:wrap">${Object.entries(methods).map(([m,c])=>`<div class="glass" style="padding:12px 20px"><p style="font-size:.7rem;color:var(--muted);text-transform:uppercase">${m}</p><p style="font-size:1.2rem;font-weight:700">${c}</p></div>`).join('')}</div></div>`;}
-
-function exportRpt(fmt){const rows=[['Invoice','Customer','Date','Amount','Payment','Status']];S.invoices.forEach(i=>{rows.push([i.invoiceNumber||i.id,i.customer?.customerName||i.customerName||'-',fmtDate(i.createdAt||i.date),i.total,i.paymentMethod||'-',i.paymentStatus||i.status||'paid']);});
-const csv=rows.map(r=>r.join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-report-'+Date.now()+'.csv';a.click();toast('Report exported!','success');}
+const rev=filtered.reduce((s,i)=>s+parseFloat(i.total||0),0);const vat=filtered.reduce((s,i)=>s+parseFloat(i.vatAmount||i.vat_amount||0),0);const disc=filtered.reduce((s,i)=>s+parseFloat(i.discount||0),0);const methods={};filtered.forEach(i=>{const m=i.paymentMethod||i.payment_method||'other';methods[m]=(methods[m]||0)+1;});
+const custTotals={};filtered.forEach(i=>{const cn=i.customer?.customerName||i.customerName||'Unknown';custTotals[cn]=(custTotals[cn]||0)+parseFloat(i.total||0);});const topCust=Object.entries(custTotals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+$('rpt-out').innerHTML=`<div class="fade-in"><h3 style="font-size:1.1rem;font-weight:700;margin-bottom:20px">📊 Report: ${from.toLocaleDateString('en-GB')} — ${to.toLocaleDateString('en-GB')}</h3>
+<div class="grid-4" style="margin-bottom:24px">${[{l:'Revenue',v:fmtMoney(rev),c:'var(--gold)'},{l:'Invoices',v:filtered.length,c:'var(--mint)'},{l:'VAT Collected',v:fmtMoney(vat),c:'var(--info)'},{l:'Avg/Invoice',v:filtered.length?fmtMoney(rev/filtered.length):'0',c:'var(--txt)'}].map(s=>`<div class="stat-card"><p class="sl">${s.l}</p><p class="sv" style="color:${s.c}">${s.v}</p></div>`).join('')}</div>
+${disc>0?`<p style="font-size:.85rem;margin-bottom:16px">Total Discounts Given: <strong style="color:var(--danger)">${fmtMoney(disc)}</strong></p>`:''}
+<div class="grid-2" style="margin-bottom:16px"><div><h4 style="font-size:.9rem;font-weight:700;margin-bottom:12px">Payment Methods</h4><div style="display:flex;gap:8px;flex-wrap:wrap">${Object.entries(methods).map(([m,c])=>`<div style="padding:10px 16px;background:var(--gbg);border:1px solid var(--gbr);border-radius:var(--radsm)"><p style="font-size:.65rem;color:var(--muted);text-transform:uppercase">${m}</p><p style="font-size:1.1rem;font-weight:700">${c}</p></div>`).join('')}</div></div>
+<div><h4 style="font-size:.9rem;font-weight:700;margin-bottom:12px">Top Customers</h4>${topCust.map(([n,v])=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gbr);font-size:.85rem"><span>${n}</span><span style="font-weight:600;color:var(--gold)">${fmtMoney(v)}</span></div>`).join('')||'<p style="color:var(--muted)">No data</p>'}</div></div></div>`;}
+function exportRpt(fmt){if(fmt==='json'){const blob=new Blob([JSON.stringify({invoices:S.invoices,customers:S.customers,exportDate:new Date().toISOString()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-report-'+Date.now()+'.json';a.click();}else{const rows=[['Invoice','Customer','Date','Amount','Payment','Status']];S.invoices.forEach(i=>{rows.push([i.invoiceNumber||i.id,i.customer?.customerName||i.customerName||'-',fmtDate(i.createdAt||i.date),i.total,i.paymentMethod||'-',i.paymentStatus||i.status||'paid']);});const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-report-'+Date.now()+'.csv';a.click();}toast('Exported!','success');}
 
 // Settings
-function loadSets(){$('s-company').value=S.sets.company||'Government Services';$('s-vat').value=S.sets.vat||5;$('s-cur').value=S.sets.currency||'AED';
-$('sys-stats').innerHTML=`<div class="stat-card"><p class="sl">Total Invoices</p><p class="sv" style="color:var(--gold)">${S.invoices.length}</p></div><div class="stat-card"><p class="sl">Total Revenue</p><p class="sv" style="color:var(--mint)">${S.invoices.reduce((s,i)=>s+parseFloat(i.total||0),0).toFixed(2)}</p></div>`;}
-function saveSets(){S.sets.company=$('s-company').value;S.sets.vat=parseFloat($('s-vat').value)||5;S.sets.currency=$('s-cur').value;localStorage.setItem('gserp_s',JSON.stringify(S.sets));toast('Settings saved!','success');}
-function exportAll(){const d={invoices:S.invoices,customers:S.customers,users:S.users,branches:S.branches,services:S.services,exportDate:new Date().toISOString()};const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-export-'+Date.now()+'.json';a.click();toast('Data exported!','success');}
+function loadSets(){$('s-company').value=S.sets.company||'Government Services';$('s-vat').value=S.sets.vat||5;$('s-cur').value=S.sets.currency||'AED';$('s-tabtitle').value=S.sets.tabTitle||'GSERP | Government Services ERP';$('s-disc').checked=!!S.sets.discountEnabled;$('s-logs').checked=S.sets.logsEnabled!==false;$('s-notif').checked=S.sets.notifEnabled!==false;$('s-branchcreate').checked=S.sets.branchCreateEnabled!==false;
+$('sys-stats').innerHTML=[{l:'Invoices',v:S.invoices.length,c:'var(--gold)'},{l:'Customers',v:S.customers.length,c:'var(--mint)'},{l:'Services',v:S.services.length,c:'var(--info)'},{l:'Users',v:S.users.length,c:'var(--txt)'}].map(s=>`<div class="stat-card"><p class="sl">${s.l}</p><p class="sv" style="color:${s.c}">${s.v}</p></div>`).join('');}
+function saveSets(){S.sets.company=$('s-company').value;S.sets.vat=parseFloat($('s-vat').value)||5;S.sets.currency=$('s-cur').value;S.sets.tabTitle=$('s-tabtitle').value;S.sets.discountEnabled=$('s-disc').checked;S.sets.logsEnabled=$('s-logs').checked;S.sets.notifEnabled=$('s-notif').checked;S.sets.branchCreateEnabled=$('s-branchcreate').checked;localStorage.setItem('gserp_s',JSON.stringify(S.sets));document.title=S.sets.tabTitle||'GSERP';if(S.sets.company)$('hdr-company').innerHTML=S.sets.company+' <span style="color:var(--gold);font-weight:300">ERP</span>';toast('Settings saved!','success');checkBranchLimit();}
+function exportAll(){const d={invoices:S.invoices,customers:S.customers,users:S.users,branches:S.branches,services:S.services,deletedInvoices:S.deletedInvoices,loginLogs:S.loginLogs,leaveRequests:S.leaveRequests,settings:S.sets,exportDate:new Date().toISOString(),version:VER};const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gserp-full-export-'+Date.now()+'.json';a.click();toast('Full data exported!','success');}
+
+// Dummy Data Generator
+function generateDummyData(){if(localStorage.getItem('gserp_dummy_v23'))return;
+const custNames=['Al Rashid Trading LLC','Emirates Construction','Dubai Hotels Group','Sharjah Logistics','Global Pharma UAE','Al Maktoum Properties','Gulf Star Restaurant','Palm Beach Resort','Marina Supermarket','Desert Rose Cafe','Al Ain Warehouse','Future Tech Solutions','Blue Ocean Fisheries','Green Valley Farms','Royal Palace Catering'];
+const userNames=['Deepak','Luhith','Ashiq'];
+// Add login logs for new users
+const todayStr=new Date().toISOString();
+userNames.forEach(u=>{S.loginLogs.unshift({user:u.toLowerCase(),role:'cashier',time:todayStr,ip:'192.168.1.'+Math.floor(Math.random()*255),device:'Desktop',status:'success'});});
+// Add dummy invoices for past 20 days with 2 main customers
+const mainCusts=S.customers.slice(0,2);
+if(mainCusts.length>=2){for(let day=1;day<=20;day++){const numInv=Math.floor(Math.random()*3)+1;for(let n=0;n<numInv;n++){const cust=mainCusts[day%2===0?0:1];const numItems=Math.floor(Math.random()*3)+1;const items=[];for(let j=0;j<numItems;j++){const svc=S.services[Math.floor(Math.random()*S.services.length)];if(svc)items.push({name:svc.name,itemCode:svc.itemCode||svc.item_code,quantity:Math.floor(Math.random()*2)+1,unitPrice:parseFloat(svc.basePrice||svc.base_price||100),totalPrice:parseFloat(svc.basePrice||svc.base_price||100)*(Math.floor(Math.random()*2)+1)});}
+const sub=items.reduce((s,it)=>s+it.totalPrice,0);const vt=sub*0.05;const tot=sub+vt;const d=daysAgo(day);d.setHours(8+Math.floor(Math.random()*10),Math.floor(Math.random()*60));
+S.invoices.push({id:'DM-'+Date.now()+'-'+day+'-'+n,invoiceNumber:'INV-2026-'+String(10000+day*10+n),createdAt:d.toISOString(),total:tot,subtotal:sub,vatAmount:vt,vatRate:5,discount:0,paymentMethod:['cash','card','bank'][Math.floor(Math.random()*3)],paymentStatus:'paid',status:'paid',customer:cust,customerName:cust.customerName||cust.customer_name,items:items});}}}
+// Sort invoices newest first
+S.invoices.sort((a,b)=>new Date(b.createdAt||b.created_at||b.date||0)-new Date(a.createdAt||a.created_at||a.date||0));
+// Add some login logs for the last month
+const roles=['cashier','supervisor','admin'];custNames.slice(0,5).forEach((name,i)=>{for(let d=0;d<5;d++){S.loginLogs.push({user:name.split(' ')[0].toLowerCase(),role:roles[i%3],time:daysAgo(Math.floor(Math.random()*30)).toISOString(),ip:'10.0.0.'+Math.floor(Math.random()*255),device:Math.random()>.5?'Mobile':'Desktop',status:'success'});}});
+// Add sample leave requests
+S.leaveRequests=[{user:'Deepak',type:'annual',from:'2026-02-10',to:'2026-02-12',days:3,reason:'Family vacation',status:'pending',createdAt:todayStr},{user:'Luhith',type:'sick',from:'2026-02-05',to:'2026-02-05',days:1,reason:'Medical appointment',status:'approved',createdAt:daysAgo(2).toISOString()},{user:'Ashiq',type:'emergency',from:'2026-02-03',to:'2026-02-04',days:2,reason:'Personal emergency',status:'approved',createdAt:daysAgo(4).toISOString()}];
+localStorage.setItem('gserp_logs',JSON.stringify(S.loginLogs.slice(0,200)));
+localStorage.setItem('gserp_lv',JSON.stringify(S.leaveRequests));
+localStorage.setItem('gserp_dummy_v23','1');}
 
 // Keyboard
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));}if(e.key==='Enter'&&$('login-screen').style.display!=='none')doLogin();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));if(e.key==='Enter'&&$('login-screen').style.display!=='none')doLogin();});
 
 // Startup
-document.addEventListener('DOMContentLoaded',async()=>{
-setTheme(S.theme);
-if(S.token){showL('Authenticating...');try{const me=await api('/auth/me');S.user=me.data||me.user||me;initApp();}catch{localStorage.removeItem('gserp_t');S.token=null;}hideL();}
+document.addEventListener('DOMContentLoaded',async()=>{setTheme(S.theme);applyLang();
+if(S.token){showL('Connecting...');try{const me=await api('/auth/me');S.user=me.data||me.user||me;initApp();}catch{localStorage.removeItem('gserp_t');S.token=null;}hideL();}
 $('login-pass')?.addEventListener('keypress',e=>{if(e.key==='Enter')doLogin();});});
 </script>
 </body>
